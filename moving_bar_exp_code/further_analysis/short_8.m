@@ -1,7 +1,7 @@
 close all
 clear all
-exp_folder = 'D:\Leo\0620exp';
-load('D:\Leo\0620exp\merge\merge_0415_short_HMM_RL_G4.3_15min_Br50_Q100.mat')
+exp_folder = 'D:\Leo\2019\0620exp';
+load('D:\Leo\2019\0620exp\merge\merge_0415_short_HMM_RL_G4.3_15min_Br50_Q100.mat')
 type = 'RL';
 load('boundary_set.mat')
 load('channel_pos.mat')
