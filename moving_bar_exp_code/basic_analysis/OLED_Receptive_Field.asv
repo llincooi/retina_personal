@@ -19,8 +19,7 @@ catch
     mkdir Analyzed_data
     mkdir Analyzed_data sort
     mkdir Analyzed_data unsort
-    disp('highly recommand to analyze cSTA first')
-    pause
+    disp('hight')
 end
 
 name = '20Hz_27_RF';%Directory name
@@ -62,7 +61,7 @@ stimulus_length = TimeStamps(2)-TimeStamps(1);
 
 for j = 1:length(displaychannel)
     num_spike =  length(analyze_spikes{displaychannel (j)});
-    if num_spike /stimulus_length < 0.3 || isnan(cSTA(j,1)) %Cells with a low firing rate for checkerbox(<1HZ) were not considered
+    if num_spike /stimulus_length < 0.3 %Cells with a low firing rate for checkerbox(<1HZ) were not considered
         null_channel = [null_channel j];
     end
 end
