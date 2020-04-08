@@ -10,7 +10,7 @@ save_svd =1;   %0 is no save svd photo, 1 is save
 
 time_shift = 1:6;%for -50ms:-300ms
 num_shift = 0.05;%50ms
-exp_folder = 'D:\Leo\0229';
+exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0620exp';
 cd(exp_folder)
 try
     load('Analyzed_data\unsort\0224_cSTA_wf_3min_Q100.mat')
@@ -35,7 +35,7 @@ else
 end
 num_shift = 1/20;%50ms
 %% For unsorted spikes
-load('D:\Leo\0225\merge\merge_0224_Checkerboard_20Hz_27_5min_Br50_Q100.mat')
+load([exp_folder, '\merge\merge_0507_Checkerboard_20Hz_13_5min_Br50_Q100.mat'])
 analyze_spikes = reconstruct_spikes;
 sorted = 0;
 %% For sorted spikes

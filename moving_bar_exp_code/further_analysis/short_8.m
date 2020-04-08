@@ -1,7 +1,9 @@
 close all
 clear all
-exp_folder = 'D:\Leo\2019\0620exp';
-load('D:\Leo\2019\0620exp\merge\merge_0415_short_HMM_RL_G4.3_15min_Br50_Q100.mat')
+%exp_folder = 'D:\Leo\2019\0620exp';
+%load('D:\Leo\2019\0620exp\merge\merge_0415_short_HMM_RL_G4.3_15min_Br50_Q100.mat')
+exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0620exp';
+load('C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0620exp\merge\merge_0415_short_HMM_RL_G4.3_15min_Br50_Q100.mat')
 type = 'RL';
 load('boundary_set.mat')
 load('channel_pos.mat')
@@ -135,12 +137,15 @@ for kk = 1:8
     end
 end
 peak_pos = [];
+avg_pos = [];
 peak_pos_heat_map = zeros(8, length(peak_pos));
 for i = 1:length(PSTH)
     if sum( PSTH(:,i)) == 0
         peak_pos = [peak_pos NaN];
+        avg_pos = [avg_pos NaN];
     else
-        index = find(norPSTH(:,i)' == max( norPSTH(:,i))); 
+        avg_pos = [avg_pos sum((1:8)'.*norPSTH(:,i))/sum( norPSTH(:,i))];
+        index = find(norPSTH(:,i)' == max( norPSTH(:,i)));
         peak_pos = [peak_pos mean(index)];
         peak_pos_heat_map(index, i) = max( norPSTH(:,i))/ sum( norPSTH(:,i));
     end
@@ -149,7 +154,11 @@ end
 figure(100);
 stairs (peak_pos);hold on
 ylim([0 9]);
-%%imagesc(peak_pos_heat_map);hold on
+%imagesc(peak_pos_heat_map);hold on
+plot (-dis(1,:)*micro_per_pixel/200+1, 'LineWidth',1.5,'LineStyle','-', 'Color', 'r');hold on
+%figure(101);
+stairs (avg_pos);hold on
+ylim([0 9]);
 plot (-dis(1,:)*micro_per_pixel/200+1, 'LineWidth',1.5,'LineStyle','-', 'Color', 'r');hold on
 % figure(99);
 % x = xcorr (-dis(1,:)*micro_per_pixel/200+1, peak_pos);
