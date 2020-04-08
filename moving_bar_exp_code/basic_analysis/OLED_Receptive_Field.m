@@ -136,11 +136,8 @@ for k =displaychannel
     electrode_x(k) = (oled_channel_pos(k,1)-meaCenter_x)*side_length/mea_size_bm + (side_length+1)/2;
     electrode_y(k) = (oled_channel_pos(k,2)-meaCenter_y)*side_length/mea_size_bm + (side_length+1)/2;
     num_spike =  length(analyze_spikes{k});
-    if num_spike /stimulus_length > 0.3
-        max_value  = max(space, [], 'all');
-        RF_properties(k,:) = RF_finder(space); %['Amplitude',' X-Coordinate', 'X-Width','Y-Coordinate','Y-Width','Angle'];
-    end
-    
+    max_value  = max(space, [], 'all');
+    RF_properties(k,:) = RF_finder(space); %['Amplitude',' X-Coordinate', 'X-Width','Y-Coordinate','Y-Width','Angle'];   
     
     %Plot spatial SVD
     figure(k+60)
@@ -211,15 +208,13 @@ for k =displaychannel
     end
    
     
-end
+en
 
-%Change coordinates and units of RF_properties
+%Change coordinates, reunit and redefine RF_properties => ['Amplitude',' X-Coordinate', 'Long-axis','Y-Coordinate','short-axis','Angle(Long-axis)','RF-"radius"'];
 for k = displaychannel
     RF_properties(k,2) = ( RF_properties(k,2) - (side_length+1)/2)/(side_length/mea_size_bm)+meaCenter_x;
     RF_properties(k,4) = ( RF_properties(k,4) - (side_length+1)/2)/(side_length/mea_size_bm)+meaCenter_y;
 end
-
-% reunit and redefine RF_properties => ['Amplitude',' X-Coordinate', 'Long-axis','Y-Coordinate','short-axis','Angle(Long-axis)','RF-"radius"'];
 RF_pixel_size = mea_size_bm/side_length*micro_per_pixel %mircometer
 RF_properties(:,[3 5]) =  1.5*RF_properties(:,[3 5])*RF_pixel_size; %%mm %%1.5*sdv accroding to Gollisch
 RF_properties = [RF_properties sqrt(RF_properties(:,3).*RF_properties(:,5))];%RF_properties[7] == RF-"radius" == (a*b)^0.5
