@@ -218,10 +218,20 @@ for k = displaychannel
     RF_properties(k,2) = ( RF_properties(k,2) - (side_length+1)/2)/(side_length/mea_size_bm)+meaCenter_x;
     RF_properties(k,4) = ( RF_properties(k,4) - (side_length+1)/2)/(side_length/mea_size_bm)+meaCenter_y;
 end
-% titles and checkerboard size
+
+% reunit and redefine RF_properties => ['Amplitude',' X-Coordinate', 'Long-axis','Y-Coordinate','short-axis','Angle(Long-axis)','RF-"radius"'];
 RF_pixel_size = mea_size_bm/side_length*micro_per_pixel %mircometer
 RF_properties(:,[3 5]) =  1.5*RF_properties(:,[3 5])*RF_pixel_size; %%mm %%1.5*sdv accroding to Gollisch
-RF_properties = [RF_properties sqrt(RF_properties(:,3).*RF_properties(:,5)) ];
+RF_properties = [RF_properties sqrt(RF_properties(:,3).*RF_properties(:,5))];%RF_properties[7] == RF-"radius" == (a*b)^0.5
+for i = find(RF_properties(:,3)<RF_properties(:,5))'
+    RF_properties(i,[3 5]) = RF_properties(i,[5 3]);
+    if RF_properties(i,6) > 0
+        RF_properties(i,6) = RF_properties(i,6) - pi/2;
+    else
+        RF_properties(i,6) = RF_properties(i,6) + pi/2;
+    end
+end
+
 
 if sorted
     save([exp_folder,'\Analyzed_data\sort\RF_properties.mat'],'RF_properties');
