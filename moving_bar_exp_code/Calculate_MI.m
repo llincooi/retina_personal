@@ -1,16 +1,17 @@
 clear all;
 code_folder = pwd;
 %exp_folder = 'D:\Leo\1012exp';
-exp_folder_cell = {'D:\Leo\0229', 'D:\Leo\1219exp' ,'D:\Leo\1017exp'};
+num_peak = 2;
+exp_folder_cell = {'D:\Leo\0409', 'D:\Leo\1219exp' ,'D:\Leo\1017exp'};
 type_folder_cell = {'pos', 'v', 'pos&v'};%'abs', 'pos', 'v', 'pos&v'.
-for ttt = 1:3
+for ttt = 1
 for eee = 1
 exp_folder = exp_folder_cell{eee};
 cd(exp_folder);
 mkdir MI
 cd MI
 type = type_folder_cell{ttt}; 
-sorted = 0;
+sorted = 1;
 unit = 0; %unit = 0 means using 'unit_a' which is writen down while picking waveform in Analyzed_data.
 
 
@@ -119,9 +120,10 @@ for z =1:n_file %choose file
     time=[-backward*bin:bin:forward*bin];
     MI_peak=zeros(1,60);
     ind_peak=zeros(1,60);
-    peak_times = zeros(1,60)-1000000;
-    P_channel = [];
-    N_channel = [];
+    peak_time = zeros(1,60)-1000000;
+    ind_local_max2 = cell(1,60);
+    MI_peaks= cell(1,60);
+    MI_width = zeros(1,60);
     for channelnumber=1:60
         
         Neurons = BinningSpike(channelnumber,:);  %for single channel
@@ -153,36 +155,57 @@ for z =1:n_file %choose file
         Mutual_infos{channelnumber} = information;
         Mutual_shuffle_infos{channelnumber} = information_shuffle;
         
-        %find peaks
-        if max(Mutual_infos{channelnumber}-mean(Mutual_shuffle_infos{channelnumber}))<0.1
-            continue;
-        end
-        Mutual_infos{channelnumber} = smooth(Mutual_infos{channelnumber});
-        [MI_peak(channelnumber), ind_peak(channelnumber)] = max(Mutual_infos{channelnumber}); % MI_peak{number of data}{number of channel}
-        if (time(ind_peak(channelnumber)) < -1000) || (time(ind_peak(channelnumber)) > 1000) % the 100 points, timeshift is 1000
+     %% find peaks and width
+        mean_MI_shuffle = mean(Mutual_shuffle_infos{channelnumber});
+        baseline = mean_MI_shuffle - std(Mutual_shuffle_infos{channelnumber});
+        smooth_mutual_information = smooth(Mutual_infos{channelnumber});
+        MIdiff = diff(smooth_mutual_information);
+        ind_local_extrema = find(MIdiff(1:end-1).*MIdiff(2:end) < 0)+1; %find all local extrema
+        if isempty(ind_local_extrema)
             MI_peak(channelnumber) = NaN;
             ind_peak(channelnumber) = NaN;
+            continue
         end
-        % ======= exclude the MI that is too small ===========
-        pks_1d=ind_peak(channelnumber);
-        peaks_ind=pks_1d(~isnan(pks_1d));
-        peaks_time = time(peaks_ind);
-        % ============ find predictive cell=============
-        if peaks_time>=0
-            P_channel=[P_channel channelnumber];
-        elseif peaks_time<0
-            N_channel=[N_channel channelnumber];
+        [a I] = sort(smooth_mutual_information(ind_local_extrema), 'descend');
+        ind_local_max2{channelnumber} = [];
+        for i = 1:num_peak %find the biggest two local extrema with deltat in -1~1 sec.
+            if (time(ind_local_extrema(I(i))) < -1000) || (time(ind_local_extrema(I(i))) > 1000) ||  max(smooth_mutual_information)-baseline < 0.1% the 100 points, timeshift is 1000
+            else
+                ind_local_max2{channelnumber} = [ind_local_max2{channelnumber} ind_local_extrema(I(i))]; %factor out biggest 'num_peak' local extrema
+            end
         end
-        if length(peaks_time)>0
-            peak_times(channelnumber) = peaks_time;
+        if isempty(ind_local_max2{channelnumber})
+            MI_peak(channelnumber) = NaN;
+            ind_peak(channelnumber) = NaN;
+        else
+            ind_local_max2{channelnumber} = sort(ind_local_max2{channelnumber}, 'descend');
+            MI_peaks{channelnumber} = smooth_mutual_information(ind_local_max2{channelnumber});
+            %pick the right one
+            ind_peak(channelnumber) = ind_local_max2{channelnumber}(1);
+            peak_time(channelnumber) = time(ind_peak(channelnumber));
+            MI_peak(channelnumber) = smooth_mutual_information(ind_peak(channelnumber));
         end
+        
+        %calculate MI_width by seeing MI curve as a Gaussian distribution. So the unit of MI_width would be ms.
+        mutual_information = Mutual_infos{channelnumber};
+        mean_MI_distr = 0;
+        sq_MI_distr = 0;
+        for j = 1:length(mutual_information)
+            if mutual_information(j) > baseline
+                mean_MI_distr =  mean_MI_distr+j*(mutual_information(j)-baseline)/sum(mutual_information);
+                sq_MI_distr =sq_MI_distr+ j^2*(mutual_information(j)-baseline)/sum(mutual_information);
+            end
+        end
+        MI_width( channelnumber) =sqrt (sq_MI_distr-mean_MI_distr^2);
+     
+     
     end
     acf = autocorr(bin_pos,100);
     corr_time = interp1(acf,1:length(acf),0.5,'linear')/60;
     if sorted
-        save([exp_folder,'\MI\sort\', type,'_',name(12:end),'.mat'],'time','Mutual_infos','Mutual_shuffle_infos','P_channel','N_channel','peak_times', 'MI_peak', 'corr_time')
+        save([exp_folder,'\MI\sort\', type,'_',name(12:end),'.mat'],'time','Mutual_infos','Mutual_shuffle_infos','peak_time', 'MI_peak','MI_width', 'ind_local_max2','corr_time')
     else
-        save([exp_folder,'\MI\unsort\', type,'_',name(7:end),'.mat'],'time','Mutual_infos','Mutual_shuffle_infos','P_channel','N_channel','peak_times', 'MI_peak', 'corr_time')
+        save([exp_folder,'\MI\unsort\', type,'_',name(7:end),'.mat'],'time','Mutual_infos','Mutual_shuffle_infos','peak_time', 'MI_peak','MI_width', 'ind_local_max2',  'corr_time')
     end
     
     

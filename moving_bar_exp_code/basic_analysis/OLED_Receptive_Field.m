@@ -7,24 +7,45 @@ load('oled_boundary_set.mat')
 displaychannel =1:60;%Choose which channel to display
 save_photo =1;%0 is no save RF photo, 1 is save
 save_svd =1;%0 is no save svd photo, 1 is save
+sorted = 1;
+unit = 0;
 
-
-exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0229';
+name = '30Hz_27_RF';%Directory name
+exp_folder = 'D:\Leo\0409';
 cd(exp_folder)
+if ~sorted
+    load('merge\merge_0224_Checkerboard_30Hz_27_15min_Br50_Q100.mat')
+    analyze_spikes = reconstruct_spikes;
+    sort_directory = 'sort';
+else
+    load('sort_merge_spike\sort_merge_0224_Checkerboard_30Hz_27_15min_Br50_Q100.mat')
+    unit = 1;
+    complex_channel = [];
+    analyze_spikes = get_multi_unit(exp_folder,sorted_spikes,unit);
+    sort_directory = 'unsort';
+end
+
 try
-    load('Analyzed_data\unsort\0224_cSTA_wf_3min_Q100.mat')
+    load(['Analyzed_data\',sort_directory,'\0224_cSTA_wf_3min_Q100.mat'])
+    cd Analyzed_data
+    mkdir(name)
+    cd(name)
+    mkdir sort
+    mkdir unsort
 catch
     Filker_OnOff_Index = zeros(1,60);
     cSTA = zeros(60,61);
     mkdir Analyzed_data
-    mkdir Analyzed_data sort
-    mkdir Analyzed_data unsort
+    cd Analyzed_data
+    mkdir(name)
+    cd(name)
+    mkdir sort
+    mkdir unsort
     disp('highly recommand to analyze cSTA first')
     pause
 end
 
-name = '20Hz_27_RF';%Directory name
-time_shift = 1:6;%for -50ms:-300ms
+time_shift = 1:9;%for -50ms:-300ms
 N = length(time_shift);
 if  mod(sqrt(N),1) == 0 %if N is a perfact square
     N_middle_factor = [sqrt(N) sqrt(N)];
@@ -32,17 +53,9 @@ else
     K = flip(1:ceil(N/2));
     N_middle_factor = K(find(rem(N,K)==0));
 end
-num_shift = 1/20;%50ms
-%% For unsorted spikes
-load('merge\merge_0224_Checkerboard_20Hz_27_5min_Br50_Q100.mat')
-analyze_spikes = reconstruct_spikes;
-sorted = 0;
-%% For sorted spikes
-% load('sort_merge_spike\sort_merge_0224_Checkerboard_20Hz_27_5min_Br50_Q100.mat')
-% unit = 1;
-% complex_channel = [];
-% analyze_spikes = get_multi_unit(exp_folder,sorted_spikes,unit);
-% sorted = 1;
+num_shift = 1/30;%50ms
+cd(exp_folder)
+
 
 
 %% Create directory
@@ -102,7 +115,7 @@ for k =displaychannel
         reshape_RF(:,i) = reshape(gauss_RF{i,k},[side_length^2,1]);
     end
     [U,S,V] = svd(reshape_RF');%U is temporal filter, V is one dimensional spatial filter, S are singular values
-    if (U(1,2)*cSTA(k,end-round(num_shift/BinningInterval)) < 0) % asume that all channel are fast-OFF-slow-ON if there is no csta file.
+    if (U(1,2)*sum(cSTA(k,end-round(0.066/BinningInterval):end)) < 0) % asume that all channel are fast-OFF-slow-ON if there is no csta file.
         U(:,2) = -U(:,2);
         V(:,2) = -V(:,2);
     end
@@ -178,7 +191,7 @@ end
 
 
 %% plot RF & electrode position & RF center
-for k =displaychannel
+for k = displaychannel
     %plot RF & electrode position & RF center
     figure(k);
     num_spike =  length(analyze_spikes{k});
@@ -208,7 +221,7 @@ for k =displaychannel
     end
    
     
-en
+end
 
 %Change coordinates, reunit and redefine RF_properties => ['Amplitude',' X-Coordinate', 'Long-axis','Y-Coordinate','short-axis','Angle(Long-axis)','RF-"radius"'];
 for k = displaychannel
@@ -229,9 +242,9 @@ end
 
 
 if sorted
-    save([exp_folder,'\Analyzed_data\sort\RF_properties.mat'],'RF_properties');
+    save([exp_folder,'\Analyzed_data\', name, '\sort\RF_properties.mat'],'RF_properties');
 else
-    save([exp_folder,'\Analyzed_data\unsort\RF_properties.mat'],'RF_properties');
+    save([exp_folder,'\Analyzed_data\', name, '\unsort\RF_properties.mat'],'RF_properties');
 end
 
 

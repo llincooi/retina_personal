@@ -3,10 +3,11 @@ close all;
 clear all;
 %% Setting
 code_folder = pwd;
-exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0229';
+exp_folder = 'D:\Leo\0409';
 load('rr.mat')
 cd(exp_folder);
-sorted = 0;
+sorted = 1;
+unit = 0;
 save_photo = 1;
 name = '0224_cSTA_wf_3min_Q100';
 mean_lumin = 6.5;

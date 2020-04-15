@@ -4,7 +4,7 @@ clear all;
 close all;
 load('rr.mat');
 code_folder = pwd;
-exp_folder =  'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0229';
+exp_folder =  'D:\Leo\0409';
 save_photo =1;%0 is no save on off photo and data, 1 is save
 cd(exp_folder)
 p_channel = [];%Green is predictive
@@ -12,18 +12,18 @@ np_channel = [];%Purple is non-predictive
 %load('predictive_channel\0602_HMM_RL_5G_7min_Br50_Q100_1.mat')
 name = '0224_Gollish_OnOff_movie_5min_Br50_Q100_6.5mW';%Name that used to save photo and data
 Samplingrate=20000; %fps of diode in A3
-sorted = 0;
+sorted = 1;
 %% For sorted spikes
 if sorted
-load(['data\',name,'.mat'])
-load(['sort\',name,'.mat'])
-sort_directory = 'sort';
+    load(['data\',name,'.mat'])
+    load(['sort\',name,'.mat'])
+    sort_directory = 'sort';
+    Spikes = get_multi_unit(exp_folder,Spikes,0);
 else
-%% For unsorted spikes
-load(['data\',name,'.mat'])
-sort_directory = 'unsort';
+ %% For unsorted spikes
+    load(['data\',name,'.mat'])
+    sort_directory = 'unsort';
 end
-Spikes{31} = [0];
 num_cycle =40;
 lumin=a_data(3,:);%Careful: cant subtract a value to the lumin series, or the correspondent  Spike time would be incorrect!
 

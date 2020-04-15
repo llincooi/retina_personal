@@ -10,10 +10,10 @@ save_svd =1;   %0 is no save svd photo, 1 is save
 
 time_shift = 1:6;%for -50ms:-300ms
 num_shift = 0.05;%50ms
-exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0620exp';
+exp_folder = 'D:\Leo\2019\1219exp';
 cd(exp_folder)
 try
-    load('Analyzed_data\unsort\0224_cSTA_wf_3min_Q100.mat')
+     load('Analyzed_data\unsort\csta_lumin10.mat')
 catch
     Filker_OnOff_Index = zeros(1,60);
     cSTA = zeros(60,61);
@@ -24,7 +24,7 @@ catch
     pause
 end
 
-name = '20Hz_27_RF';%Directory name
+name = '20Hz_13_RF';%Directory name
 time_shift = 1:6;%for -50ms:-300ms
 N = length(time_shift);
 if  mod(sqrt(N),1) == 0 %if N is a perfact square
@@ -35,7 +35,7 @@ else
 end
 num_shift = 1/20;%50ms
 %% For unsorted spikes
-load([exp_folder, '\merge\merge_0507_Checkerboard_20Hz_13_5min_Br50_Q100.mat'])
+load([exp_folder, '\merge\merge_0421_Checkerboard_20Hz_13_5min_Br50_Q100.mat'])
 analyze_spikes = reconstruct_spikes;
 sorted = 0;
 %% For sorted spikes
@@ -103,7 +103,7 @@ for k =displaychannel
         reshape_RF(:,i) = reshape(gauss_RF{i,k},[side_length^2,1]);
     end
     [U,S,V] = svd(reshape_RF');%U is temporal filter, V is one dimensional spatial filter, S are singular values
-    if (U(1,2)*cSTA(k,end-round(num_shift/BinningInterval)) < 0) % asume that all channel are fast-OFF-slow-ON if there is no csta file.
+    if (U(1,2)*cSTA(k,(length(cSTA)+1)/2-round(num_shift/0.005)) < 0) % asume that all channel are fast-OFF-slow-ON if there is no csta file.
         U(:,2) = -U(:,2);
         V(:,2) = -V(:,2);
     end

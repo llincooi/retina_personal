@@ -7,37 +7,37 @@ XOwf =1;
 XOdark = 0;
 direction = 'UR_DL';
 sorted =0;
+num_peak = 2
 if XOwf
     HMM_former_name = 'pos_0224_HMM_wf_G';
-    HMM_post_name = ['_5min_Q100']; 
+    HMM_post_name = ['_5min_Q100'];
     OU_former_name = 'pos_0224_OU_wf_G';
     OU_post_name = ['_5min_Q100'];
     OU_different_G = [3 7.5];
-    name = '5G_WF'
+    name = '5G_WF';
+    filename = 'WF_5GMI_properties';
 elseif XOdark
     HMM_former_name = ['pos_0224_HMM_Dark_',direction, '_G'];
     HMM_post_name = '_5min_Q100_6.5mW_100';
     OU_former_name = ['pos_0224_OU_Dark_', direction, '_G'];
     OU_post_name = '_5min_Q100_6.5mW_100';
     OU_different_G = [3 7.5];
-    name = '5G_DB'
+    name = '5G_DB';
+    filename = 'DB_5GMI_properties';
 else
     HMM_former_name = ['pos_0224_HMM_',direction, '_G'];
     HMM_post_name = '_5min_Q100_6.5mW';
     OU_former_name = ['pos_0224_OU_', direction, '_G'];
     OU_post_name = '_5min_Q100_6.5mW';
     OU_different_G = [3 7.5];
-    name = '5G_BB'
+    name = '5G_BB';
+    filename = 'BB_5GMI_properties';
 end
 HMM_different_G = [2.5,4.5,9,12,20];
 %Load calculated MI first(Need to run Calculate_MI.m first to get)
 if sorted
-%     load([exp_folder, '\Analyzed_data\sort\0821_Gollish_OnOff_0.8.mat']);
-%     load([exp_folder, '\Analyzed_data\sort\csta.mat'])
     cd MI\sort
 else
-%     load([exp_folder, '\Analyzed_data\unsort\0821_Gollish_OnOff_0.8.mat']);
-%     load([exp_folder, '\Analyzed_data\unsort\csta.mat'])
     cd MI\unsort
 end
 rr =[9,17,25,33,41,49,...
@@ -81,15 +81,13 @@ ha = tight_subplot(8,8,[.04 .02],[0.07 0.02],[.02 .02]);
 
 MI_peak=zeros(length(HMM_different_G),60);
 ind_peak=zeros(length(HMM_different_G),60);
+peak_times = zeros(length(HMM_different_G),60);
 for channelnumber=1:60 %choose file
     axes(ha(rr(channelnumber)));
-    
     for     G =1:length(HMM_different_G)
-        
-        
         mean_MI_shuffle = mean(cell2mat(HMM_MI_shuffle(G,channelnumber)));
         mutual_information = cell2mat(HMM_MI (G,channelnumber));
-        if channelnumber~=31
+        if channelnumber~=4
             if max(mutual_information-mean_MI_shuffle)<0.1
                 continue;
             else
@@ -99,57 +97,68 @@ for channelnumber=1:60 %choose file
                 title(channelnumber);
             end
         else
-            %             plot(time,mutual_information-mean_MI_shuffle); hold on; %,'color',cc(z,:));hold on
-            %             xlim([ -1500 2000])
-            %             ylim([0 100])
-            %             lgd =legend(allchannellegend,'Location','north');
-            %             lgd.FontSize = 11;
-            %             legend('boxoff')
+            plot(time,mutual_information-mean_MI_shuffle); hold on; %,'color',cc(z,:));hold on
+            xlim([ -1500 2000])
+            ylim([0 100])
+            lgd =legend(allchannellegend,'Location','north');
+            lgd.FontSize = 8;
+            legend('boxoff')
         end
     end
-    
     hold off;
     saveas(gcf,['FIG\',name,'.tif'])
-    
-    
 end
-%find MI peak
+%find MI peak, peak time and MI width
+ind_local_max2 =cell(length(HMM_different_G),60);
+MI_peaks = cell(length(HMM_different_G),60);
+MI_width = zeros(5,60);
 for channelnumber=1:60 %choose file
     for     G =1:length(HMM_different_G)
+        mean_MI_shuffle = mean(cell2mat(HMM_MI_shuffle(G,channelnumber)));
+        baseline = mean_MI_shuffle + std(cell2mat(HMM_MI_shuffle(G,channelnumber)));
         HMM_MI{G,channelnumber} = smooth(HMM_MI{G,channelnumber});
-        [MI_peak(G,channelnumber), ind_peak(G,channelnumber)] = max(HMM_MI{G,channelnumber}); % MI_peak{number of data}{number of channel}
-        if (time(ind_peak(G,channelnumber)) < -1000) || (time(ind_peak(G,channelnumber)) > 1000) % the 100 points, timeshift is 1000
+        MIdiff = diff(HMM_MI{G,channelnumber});
+        ind_local_extrema = find(MIdiff(1:end-1).*MIdiff(2:end) < 0)+1; %find all local extrema
+        [a I] = sort(HMM_MI{G,channelnumber}(ind_local_extrema), 'descend');
+        ind_local_max2{G,channelnumber} = [];
+        for i = 1:num_peak %find the biggest two local extrema with deltat in -1~1 sec.
+            if (time(ind_local_extrema(I(i))) < -1000) || (time(ind_local_extrema(I(i))) > 1000) ||  max(HMM_MI{G,channelnumber})-baseline < 0.05% the 100 points, timeshift is 1000
+            else
+                ind_local_max2{G,channelnumber} = [ind_local_max2{G,channelnumber} ind_local_extrema(I(i))]; %factor out biggest 'num_peak' local extrema
+            end
+        end
+        if isempty(ind_local_max2{G,channelnumber})
             MI_peak(G,channelnumber) = NaN;
             ind_peak(G,channelnumber) = NaN;
+        else
+            ind_local_max2{G,channelnumber} = sort(ind_local_max2{G,channelnumber}, 'descend');
+            MI_peaks{G,channelnumber} = HMM_MI{G,channelnumber}(ind_local_max2{G,channelnumber});
+            %pick the right one
+            ind_peak(G,channelnumber) = ind_local_max2{G,channelnumber}(1);
+            peak_times(G,channelnumber) = time(ind_peak(G,channelnumber));
+            MI_peak(G,channelnumber) = HMM_MI{G,channelnumber}(ind_peak(G,channelnumber));
         end
-        % ======= exclude the MI that is too small ===========
-        pks_1d=ind_peak(G,channelnumber);
-        peaks_ind=pks_1d(~isnan(pks_1d));
-        peaks_time = time(peaks_ind);
+        
+        %calculate MI_width by seeing MI curve as a Gaussian distribution. So the unit of MI_width would be ms.
+        mutual_information = cell2mat(HMM_MI (G,channelnumber));
+        mean_MI_distr = 0;
+        sq_MI_distr = 0;
+        for j = 1:length(mutual_information)
+            if mutual_information(j) > baseline
+                mean_MI_distr =  mean_MI_distr+j*(mutual_information(j)-baseline)/sum(mutual_information);
+                sq_MI_distr =sq_MI_distr+ j^2*(mutual_information(j)-baseline)/sum(mutual_information);
+            end
+        end
+        MI_width(G, channelnumber) =sqrt (sq_MI_distr-mean_MI_distr^2);
     end
 end
-% [25,33,34]
-%[52,53,57,58,59,60]
 %% Chose by hand and plot single channels
-MI_width = zeros(5,60);
 for channelnumber=1:60%
     if sum(isnan(MI_peak(:,channelnumber))) == 0
         figure(channelnumber)
         for   G =1:length(HMM_different_G)
-            mean_MI_shuffle = mean(cell2mat(HMM_MI_shuffle(G,channelnumber)));
-            baseline = mean_MI_shuffle + std(cell2mat(HMM_MI_shuffle(G,channelnumber)));
             mutual_information = cell2mat(HMM_MI (G,channelnumber)) ;hold on;
-            %calculate MI_width by seeing MI curve as a Gaussian distribution. So the unit of MI_width would be ms.
-            mean_MI_distr = 0;
-            sq_MI_distr = 0;
-            for j = 1:length(mutual_information)
-                if mutual_information(j) > baseline
-                    mean_MI_distr =  mean_MI_distr+j*(mutual_information(j)-baseline)/sum(mutual_information); 
-                    sq_MI_distr =sq_MI_distr+ j^2*(mutual_information(j)-baseline)/sum(mutual_information);
-                end
-            end
-            MI_width(G, channelnumber) =sqrt (sq_MI_distr-mean_MI_distr^2);
-                
+            mean_MI_shuffle = mean(cell2mat(HMM_MI_shuffle(G,channelnumber)));
             plot(time_serie{G},smooth(mutual_information- mean_MI_shuffle ),'LineWidth',1.5,'LineStyle','-');
             xlim([ -2300 1300])
             ylim([0 inf+0.1])
@@ -160,7 +169,6 @@ for channelnumber=1:60%
             plot(time_serie{G+length(HMM_different_G)},smooth(mutual_information - mean_MI_shuffle ),'LineWidth',1.5,'LineStyle',':');
             xlim([ -1300 1300])
             ylim([0 inf+0.1])
-            
         end
         title(channelnumber);
         xlabel('\deltat (ms)');ylabel('MI (bits/second)');
@@ -172,7 +180,7 @@ for channelnumber=1:60%
         hold off;
         %
         figure(channelnumber+100)
-        plot(t_corr_serie,time(ind_peak(:,channelnumber )),'-o','MarkerIndices',1:length(t_corr_serie),'LineWidth',1.5)
+        plot(t_corr_serie,peak_times(:,channelnumber ),'-o','MarkerIndices',1:length(t_corr_serie),'LineWidth',1.5)
         xlabel('t_c_o_r_r (ms)');ylabel('t_s_h_i_f_t (ms)');
         title(channelnumber);
         set(gca,'fontsize',12 );
@@ -182,13 +190,17 @@ for channelnumber=1:60%
         xlabel('t_c_o_r_r (ms)');ylabel('MI peak (bits/second)');
         title(channelnumber);
         set(gca,'fontsize',12 );
-         %
+        %
         figure(channelnumber+300)
         plot(t_corr_serie,MI_width(:, channelnumber),'-o','MarkerIndices',1:length(t_corr_serie),'LineWidth',1.5)
         xlabel('t_c_o_r_r (ms)');ylabel('MI width (time)');
         title(channelnumber);
         set(gca,'fontsize',12 );
-        
-        
     end
+end
+
+if sorted
+    save([exp_folder,'\Analyzed_data\sort\',filename,'.mat'],'MI_width', 'MI_peak', 'peak_times');
+else
+    save([exp_folder,'\Analyzed_data\unsort\',filename,'.mat'],'MI_width', 'MI_peak', 'peak_times');
 end

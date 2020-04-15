@@ -32,6 +32,4 @@ for m = 1:n_file
     save([exp_folder,'\sort_merge_spike','\sort_merge_',file],'sorted_spikes','bin_pos','TimeStamps','reconstruct_spikes','diode_BT','BinningInterval');
 end
 
-
-
 cd ..
