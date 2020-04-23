@@ -59,13 +59,13 @@ for jj=1:length(v)
     isiv(jj) = find(v(jj)<=intervals,1);
 end
 figure(1);histogram(isix, StimuSN)
-figure(2);histogram(isiv, StimuSN)
+figure(2);histogram(isii, StimuSN)
 length(unique(isiv))
 
 
 bin = BinningInterval*1000;
-backward=ceil(15000/bin);
-forward=ceil(15000/bin);
+backward=ceil(1500/bin);
+forward=ceil(1500/bin);
 time=[-backward*bin:bin:forward*bin];
 information_x_r = MIfunc(isir,isix,BinningInterval,backward,forward);
 information_v_r = MIfunc(isir,isiv,BinningInterval,backward,forward);
@@ -74,17 +74,28 @@ information_i_r = MIfunc(isir,isii,BinningInterval,backward,forward);
 shuffle_information_x_r = minShuffle_MIfunc(isir,isix,BinningInterval,backward,forward);
 shuffle_information_v_r = minShuffle_MIfunc(isir,isiv,BinningInterval,backward,forward);
 shuffle_information_i_r = minShuffle_MIfunc(isir,isii,BinningInterval,backward,forward);
-information_x_r = information_x_r - max(shuffle_information_x_r);
-information_v_r = information_v_r - max(shuffle_information_v_r);
-information_i_r = information_i_r - max(shuffle_information_i_r);
+information_x_r = information_x_r - shuffle_information_x_r;
+information_v_r = information_v_r - shuffle_information_v_r;
+information_i_r = information_i_r - shuffle_information_i_r;
 figure(4);
 plot(time,information_x_r, 'r');hold on;
 plot(time,information_v_r, 'b')
 plot(time,information_i_r, 'k')
 plot(time,information_x_r+ information_v_r, 'm')
 time(find(information_i_r > information_x_r+ information_v_r))
+figure(5);
+plot(time,shuffle_information_x_r, 'r');hold on;
+plot(time,shuffle_information_v_r, 'b')
+plot(time,shuffle_information_i_r, 'k')
 
-
+shuffle_isir = isir(randperm(length(isir)));
+shuffle_information_x_r2 = MIfunc(shuffle_isir,isix,BinningInterval,backward,forward);
+shuffle_information_v_r2 = MIfunc(shuffle_isir,isiv,BinningInterval,backward,forward);
+shuffle_information_i_r2 = MIfunc(shuffle_isir,isii,BinningInterval,backward,forward);
+figure(6);
+plot(time,shuffle_information_x_r2, 'r');hold on;
+plot(time,shuffle_information_v_r2, 'b')
+plot(time,shuffle_information_i_r2, 'k')
 
 
 information_x_x = MIfunc(isix,isix,BinningInterval,backward,forward);
