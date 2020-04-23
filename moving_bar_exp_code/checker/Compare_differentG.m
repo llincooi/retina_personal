@@ -3,7 +3,7 @@ clear all;
 code_folder = pwd;
 exp_folder = 'D:\Leo\0409';
 cd(exp_folder)
-target_set = 4;
+target_set = 1;
 sorted =0;
 cd Analyzed_data
 all_file = dir('*.mat') ; % change the type of the files which you want to select, subdir or dir.

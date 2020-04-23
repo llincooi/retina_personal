@@ -169,7 +169,7 @@ for z =1:n_file %choose file
         [a I] = sort(smooth_mutual_information(ind_local_extrema), 'descend');
         ind_local_max2{channelnumber} = [];
         for i = 1:num_peak %find the biggest two local extrema with deltat in -1~1 sec.
-            if (time(ind_local_extrema(I(i))) < -1000) || (time(ind_local_extrema(I(i))) > 1000) ||  max(smooth_mutual_information)-baseline < 0.1% the 100 points, timeshift is 1000
+            if (time(ind_local_extrema(I(i))) < -1000) || (time(ind_local_extrema(I(i))) > 1000) ||  smooth_mutual_information(ind_local_extrema(I(i)))-baseline < 0.1% the 100 points, timeshift is 1000
             else
                 ind_local_max2{channelnumber} = [ind_local_max2{channelnumber} ind_local_extrema(I(i))]; %factor out biggest 'num_peak' local extrema
             end
