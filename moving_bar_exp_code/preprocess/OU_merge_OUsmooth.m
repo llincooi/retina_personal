@@ -17,7 +17,7 @@ merge_ID = fopen('playmovie/merge_list_OUsmooth.txt','r');
 formatSpec = '%c';
 merge_txt = textscan(merge_ID,'%s','delimiter','\n'); 
 cd ..
-mkdir OU_merge_OUsmooth
+mkdir merge
 
 for m = 1:num_files
     name = txt{1}{m};

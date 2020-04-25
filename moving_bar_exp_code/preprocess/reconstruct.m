@@ -374,7 +374,7 @@ else
     if ~OU2OUsmooth
         save([pwd,'\merge','\merge_',data_name,'.mat'],'bin_pos','TimeStamps','reconstruct_spikes','diode_BT','BinningInterval');
     else
-        save([pwd,'\OU_merge_OUsmooth','\merge_',data_name,'.mat'],'bin_pos','TimeStamps','reconstruct_spikes','diode_BT','BinningInterval');
+        save([pwd,'\merge','\merge_',data_name,'_toOUsmooth.mat'],'bin_pos','TimeStamps','reconstruct_spikes','diode_BT','BinningInterval');
     end
 
 end
