@@ -17,7 +17,7 @@ merge_ID = fopen('playmovie/merge_list_OUsmooth.txt','r');
 formatSpec = '%c';
 merge_txt = textscan(merge_ID,'%s','delimiter','\n'); 
 cd ..
-mkdir merge
+mkdir OU_merge_OUsmooth
 
 for m = 1:num_files
     name = txt{1}{m};
@@ -64,7 +64,7 @@ for m = 1:num_files
     
     pass = 0;
     cd(code_folder)
-    pass = reconstruct(exp_folder,type,name,workspace_name,videoworkspace, delay_correction);
+    pass = reconstruct(exp_folder,type,name,workspace_name,videoworkspace, delay_correction, 1);
     if pass
         disp([name,'  passes'])
     else
