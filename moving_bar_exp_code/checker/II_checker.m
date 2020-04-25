@@ -1,12 +1,12 @@
 clear all;
 close all;
-load('D:\Leo\0229\merge\merge_0224_HMM_UR_DL_G2.5_5min_Q100_6.5mW.mat')
+%load('D:\Leo\0229\merge\merge_0224_HMM_UR_DL_G2.5_5min_Q100_6.5mW.mat')
+load('C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0406\merge\merge_0224_HMM_RL_G2.5_5min_Q100_6.5mW.mat')
 fps =60;
-
 x = bin_pos(1:end);
 v = finite_diff(x ,4);
-tau_v = 0.2*fps; %has to be greater than zero
-tau_x = 0.4*fps;
+tau_v = 0;%.2*fps; %has to be greater than zero
+tau_x = 0;%.4*fps;
 r = poissrnd(abs(x.*v)); %%Generate spikes from poisson process
 r = r(1+tau_v:end-tau_x);
 x = x(1+tau_x +tau_v:end);
@@ -17,6 +17,15 @@ isir = [];
 for jj=1:length(r)
     isir(jj) = find(r(jj)<=thesholds,1);
 end
+
+BinningSpike = zeros(60,length(diode_BT));
+analyze_spikes = cell(1,60);
+analyze_spikes = reconstruct_spikes;
+for i = 1:60  % i is the channel number
+    [n,~] = hist(analyze_spikes{i},diode_BT) ;  %yk_spikes is the spike train made from"Merge_rePos_spikes"
+    BinningSpike(i,:) = n ;
+end
+isir = BinningSpike(57,:);
 
 StimuSN = 9;
 sqrtStimuSN = 9;
@@ -64,38 +73,37 @@ length(unique(isiv))
 
 
 bin = BinningInterval*1000;
-backward=ceil(1500/bin);
-forward=ceil(1500/bin);
+backward=ceil(15000/bin);
+forward=ceil(15000/bin);
 time=[-backward*bin:bin:forward*bin];
 information_x_r = MIfunc(isir,isix,BinningInterval,backward,forward);
 information_v_r = MIfunc(isir,isiv,BinningInterval,backward,forward);
 information_i_r = MIfunc(isir,isii,BinningInterval,backward,forward);
-%shuffle_isir = isir(randperm(length(isir)));
-shuffle_information_x_r = minShuffle_MIfunc(isir,isix,BinningInterval,backward,forward);
-shuffle_information_v_r = minShuffle_MIfunc(isir,isiv,BinningInterval,backward,forward);
-shuffle_information_i_r = minShuffle_MIfunc(isir,isii,BinningInterval,backward,forward);
-information_x_r = information_x_r - shuffle_information_x_r;
-information_v_r = information_v_r - shuffle_information_v_r;
-information_i_r = information_i_r - shuffle_information_i_r;
+shuffle_isir = isir(randperm(length(isir)));
+shuffle_information_x_r = MIfunc(shuffle_isir,isix,BinningInterval,backward,forward);
+shuffle_information_v_r = MIfunc(shuffle_isir,isiv,BinningInterval,backward,forward);
+shuffle_information_i_r = MIfunc(shuffle_isir,isii,BinningInterval,backward,forward);
+information_x_r = information_x_r - min(shuffle_information_x_r);
+information_v_r = information_v_r - min(shuffle_information_v_r);
+information_i_r = information_i_r - min(shuffle_information_i_r);
 figure(4);
 plot(time,information_x_r, 'r');hold on;
 plot(time,information_v_r, 'b')
 plot(time,information_i_r, 'k')
 plot(time,information_x_r+ information_v_r, 'm')
 time(find(information_i_r > information_x_r+ information_v_r))
-figure(5);
-plot(time,shuffle_information_x_r, 'r');hold on;
-plot(time,shuffle_information_v_r, 'b')
-plot(time,shuffle_information_i_r, 'k')
+% figure(5);
+% plot(time,shuffle_information_x_r, 'r');hold on;
+% plot(time,shuffle_information_v_r, 'b')
+% plot(time,shuffle_information_i_r, 'k')
 
-shuffle_isir = isir(randperm(length(isir)));
-shuffle_information_x_r2 = MIfunc(shuffle_isir,isix,BinningInterval,backward,forward);
-shuffle_information_v_r2 = MIfunc(shuffle_isir,isiv,BinningInterval,backward,forward);
-shuffle_information_i_r2 = MIfunc(shuffle_isir,isii,BinningInterval,backward,forward);
-figure(6);
-plot(time,shuffle_information_x_r2, 'r');hold on;
-plot(time,shuffle_information_v_r2, 'b')
-plot(time,shuffle_information_i_r2, 'k')
+% shuffle_information_x_r2 = minShuffle_MIfunc(isir,isix,BinningInterval,backward,forward);
+% shuffle_information_v_r2 = minShuffle_MIfunc(isir,isiv,BinningInterval,backward,forward);
+% shuffle_information_i_r2 = minShuffle_MIfunc(isir,isii,BinningInterval,backward,forward);
+% figure(6);
+% plot(time,shuffle_information_x_r2, 'r');hold on;
+% plot(time,shuffle_information_v_r2, 'b')
+% plot(time,shuffle_information_i_r2, 'k')
 
 
 information_x_x = MIfunc(isix,isix,BinningInterval,backward,forward);

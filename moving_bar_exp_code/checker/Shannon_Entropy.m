@@ -1,4 +1,4 @@
-function H = Shannon_Entropy(seire, StimuSN)
+function H = Shannon_Entropy(seire)
 H = 0;
 seire =  seire +1-min(seire);
 for k = unique(seire)
