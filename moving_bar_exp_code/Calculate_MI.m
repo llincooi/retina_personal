@@ -2,16 +2,16 @@ clear all;
 code_folder = pwd;
 %exp_folder = 'D:\Leo\1012exp';
 num_peak = 2;
-exp_folder_cell = {'D:\Leo\0409', 'D:\Leo\1219exp' ,'D:\Leo\1017exp'};
+exp_folder_cell = {'D:\Leo\0409', 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0406' ,'D:\Leo\1017exp'};
 type_folder_cell = {'pos', 'v', 'pos&v'};%'abs', 'pos', 'v', 'pos&v'.
 for ttt = 1
-for eee = 1
+for eee = 2
 exp_folder = exp_folder_cell{eee};
 cd(exp_folder);
 mkdir MI
 cd MI
 type = type_folder_cell{ttt}; 
-sorted = 1;
+sorted = 0;
 unit = 0; %unit = 0 means using 'unit_a' which is writen down while picking waveform in Analyzed_data.
 
 
@@ -27,7 +27,7 @@ else
     n_file = length(all_file) ;
 end
 cd(code_folder);
-for z =1:n_file %choose file
+for z =13:2:21;%1:n_file %choose file
     Mutual_infos = cell(1,60);
     Mutual_shuffle_infos = cell(1,60);
     

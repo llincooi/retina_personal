@@ -1,9 +1,10 @@
 close all;
 clear all;
 code_folder = pwd;
-exp_folder = 'D:\Leo\0409';
+%exp_folder = 'D:\Leo\0409';
+exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0406';
 cd(exp_folder)
-sorted =1;
+sorted =0;
 %Load calculated MI first(Need to run Calculate_MI.m first to get)
 if sorted
     cd MI\sort
@@ -23,7 +24,7 @@ rr =[9,17,25,33,41,49,...
     7,15,23,31,39,47,55,63,...
     16,24,32,40,48,56];
 
-for z =1:n_file
+for z =38:2:46%1:n_file
     file = all_file(z).name ;
     [pathstr, name, ext] = fileparts(file);
     directory = [pathstr,'\'];
