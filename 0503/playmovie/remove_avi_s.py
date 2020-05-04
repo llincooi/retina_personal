@@ -21,7 +21,3 @@ for line in r:
     #f.write(l[0][:-4])
     #f.write('\n')
 f.writelines(movie_list)
-    
-
-
-

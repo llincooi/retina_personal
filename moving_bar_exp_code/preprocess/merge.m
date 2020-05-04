@@ -5,6 +5,7 @@ delay_correction = 0.0071;
 
 code_folder = pwd;
 exp_folder = 'D:\Leo\0409';
+exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
 videoworkspace = '\\192.168.0.100\Experiment\Retina\2020Videos\0219v\videoworkspace\';
 cd(exp_folder)
 cd playmovie
