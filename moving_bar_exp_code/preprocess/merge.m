@@ -4,8 +4,8 @@ close all;
 delay_correction = 0.0071;
 
 code_folder = pwd;
-exp_folder = 'D:\Leo\0409';
-exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
+exp_folder = 'D:\Leo\0503';
+%exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
 videoworkspace = '\\192.168.0.100\Experiment\Retina\2020Videos\0219v\videoworkspace\';
 cd(exp_folder)
 cd playmovie
@@ -65,13 +65,14 @@ for m = 1:num_files
     
     pass = 0;
     cd(code_folder)
-    pass = reconstruct(exp_folder,type,name,workspace_name,videoworkspace, delay_correction);
+    pass = reconstruct(exp_folder,type,name,workspace_name,videoworkspace, delay_correction, 0);
     if pass
         disp([name,'  passes'])
     else
         disp([name,'  not passes'])
     end
 end
+close all;
 
 
 
