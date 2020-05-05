@@ -7,22 +7,23 @@ load('oled_boundary_set.mat')
 displaychannel =1:60;%Choose which channel to display
 save_photo =1;%0 is no save RF photo, 1 is save
 save_svd =1;%0 is no save svd photo, 1 is save
-sorted = 1;
+sorted = 0;
 unit = 0;
 
 name = '30Hz_27_RF';%Directory name
 exp_folder = 'D:\Leo\0409';
+exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503'
 cd(exp_folder)
 if ~sorted
     load('merge\merge_0224_Checkerboard_30Hz_27_15min_Br50_Q100.mat')
     analyze_spikes = reconstruct_spikes;
-    sort_directory = 'sort';
+    sort_directory = 'unsort';
 else
     load('sort_merge_spike\sort_merge_0224_Checkerboard_30Hz_27_15min_Br50_Q100.mat')
     unit = 1;
     complex_channel = [];
     analyze_spikes = get_multi_unit(exp_folder,sorted_spikes,unit);
-    sort_directory = 'unsort';
+    sort_directory = 'sort';
 end
 
 try
@@ -55,7 +56,7 @@ else
 end
 num_shift = 1/30;%50ms
 cd(exp_folder)
-
+load('rr_OLED')
 
 
 %% Create directory
@@ -108,6 +109,8 @@ side_length = length(sum_checkerboard);%length of checkerboard
 electrode_x = zeros(1,60);%x positions of electrode
 electrode_y = zeros(1,60);%y positions of electrode
 RF_properties = zeros(60,6); %find RF_center by 2D GaussianFit['Amplitude',' X-Coordinate', 'X-Width','Y-Coordinate','Y-Width','Angle'];
+f_all = figure('Name', 'All_Receptivefield','units','normalized','outerposition',[0 0 1 1])
+ha = tight_subplot(8,8,[.04 .02],[0.07 0.02],[.02 .02]);
 for k =displaychannel
     %calculate SVD
     reshape_RF = zeros(side_length^2,length(time_shift));
@@ -120,6 +123,15 @@ for k =displaychannel
         V(:,2) = -V(:,2);
     end
     space = reshape(V(:,2),[side_length,side_length]);%Reshape one dimensional spatial filter to two dimensional spatial filter
+    
+    figure(f_all)
+    axes(ha(rr(k)));        
+    imagesc(space);hold on;
+    %Plot spatial SVD    
+    title(k)
+    pbaspect([1 1 1])
+    colormap(gray);
+    colorbar;
     
     %Calculate first component percentage
     power_component = diag(S).*diag(S)/sum(S(:).*S(:))*100;%Each component percentage
@@ -187,6 +199,15 @@ for k =displaychannel
     end
     
     
+end
+
+if save_svd
+    if sorted
+        saveas(f_all,[exp_folder, '\FIG\RF\', name,'\sort','\ALL.tiff'])
+    else
+        saveas(f_all,[exp_folder, '\FIG\RF\', name,'\unsort','\ALL.tiff'])
+    end
+    close(f_all);
 end
 
 

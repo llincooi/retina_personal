@@ -4,9 +4,10 @@ clear all;
 %% Setting
 code_folder = pwd;
 exp_folder = 'D:\Leo\0409';
+exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503'
 load('rr.mat')
 cd(exp_folder);
-sorted = 1;
+sorted = 0;
 unit = 0;
 save_photo = 1;
 name = '0224_cSTA_wf_3min_Q100';
@@ -82,7 +83,7 @@ for channelnumber=useful_channelnumber
     diff_smooth_cSTA = diff(smooth(cSTA(channelnumber,:)));
     for l = fliplr(2:length(diff_smooth_cSTA))
         if diff_smooth_cSTA(l)*diff_smooth_cSTA(l-1) <= 0
-            [channelnumber l]
+            [channelnumber l];
             tau(channelnumber) = (length(diff_smooth_cSTA)-l+1)*bin;
             break
         end

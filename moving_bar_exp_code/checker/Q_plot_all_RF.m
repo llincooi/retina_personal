@@ -11,23 +11,9 @@ save_svd =1;%0 is no save svd photo, 1 is save
 time_shift = 1:9;%for -50ms:-300ms
 num_shift = 1/30;%50ms
 exp_folder = 'D:\Leo\0409';
+exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503'
 cd(exp_folder)
-% rr =[ 9 ,17,25,33,41,49,...
-%     2,10,18,26,34,42,50,58,...
-%     3,11,19,27,35,43,51,59,...
-%     4,12,20,28,36,44,52,60,...
-%     5,13,21,29,37,45,53,61,...
-%     6,14,22,30,38,46,54,62,...
-%     7,15,23,31,39,47,55,63,...
-%       16,24,32,40,48,56];
-for j =1:8
-    for i =1:8
-        rr(8*(j-1)+i) =8*i-j+1;
-    end
-end
-%  rr =1:64;
-rr([1, 8, 57, 64]) = [];
-  rr = flip(rr);
+load('rr_OLED')
 
 load('Analyzed_data\unsort\0224_cSTA_wf_3min_Q100.mat')
 
@@ -95,8 +81,8 @@ side_length = length(sum_checkerboard);%length of checkerboard
 electrode_x = zeros(1,60);%x positions of electrode
 electrode_y = zeros(1,60);%y positions of electrode
 closest_extrema = zeros(2,60);%closest positions of RF center to position of electrode
-    figure('units','normalized','outerposition',[0 0 1 1])
-    ha = tight_subplot(8,8,[.04 .02],[0.07 0.02],[.02 .02]);
+f_all = figure('Name', 'All_Receptivefield','units','normalized','outerposition',[0 0 1 1])
+ha = tight_subplot(8,8,[.04 .02],[0.07 0.02],[.02 .02]);
 for k =displaychannel
     %calculate SVD
     reshape_RF = zeros(side_length^2,length(time_shift));
@@ -109,7 +95,7 @@ for k =displaychannel
         V(:,2) = -V(:,2);
     end
     space = reshape(V(:,2),[side_length,side_length]);%Reshape one dimensional spatial filter to two dimensional spatial filter
-
+    figure(f_all)
     axes(ha(rr(k)));        
     imagesc(space);hold on;
     
