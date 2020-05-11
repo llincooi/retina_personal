@@ -3,13 +3,12 @@ code_folder = pwd;
 %exp_folder = 'D:\Leo\1012exp';
 num_peak = 2;
 exp_folder_cell = {'D:\Leo\0503', 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503' ,'D:\Leo\0409'};
-type_folder_cell = {'pos', 'v', 'pos&v'};%'abs', 'pos', 'v', 'pos&v'.
-for eee = 3
+for eee = 1
 exp_folder = exp_folder_cell{eee};
 cd(exp_folder);
 mkdir MI
 cd MI
-sorted = 1;
+sorted = 0;
 unit = 0; %unit = 0 means using 'unit_a' which is writen down while picking waveform in Analyzed_data.
 if sorted
     mkdir sort
@@ -23,7 +22,7 @@ else
     n_file = length(all_file) ;
 end
 cd(code_folder);
-for z =[1:12 14:2:20 22:n_file];%1:n_file %choose file
+for z =1:n_file;%1:n_file %choose file
     pos_Mutual_infos= cell(1,60);
     v_Mutual_infos= cell(1,60);
     joint_Mutual_infos= cell(1,60);
