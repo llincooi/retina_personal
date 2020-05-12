@@ -6,11 +6,15 @@
 close all;
 clear all;
 code_folder = pwd;
-exp_folder = 'D:\其融\github\retina_personal\II\MI';
+exp_folder = 'D:\Leo\0503';
 cd(exp_folder)
 sorted =0;
 mkdir FIG
-XOmb = 1;
+if sorted
+    cd MI\sort
+else
+    cd MI\unsort
+end
 all_file = dir('*.mat') ; % change the type of the files which you want to select, subdir or dir. 
 n_file = length(all_file) ;
 %Tina orientation
@@ -22,8 +26,8 @@ rr =[9,17,25,33,41,49,...
           6,14,22,30,38,46,54,62,...
           7,15,23,31,39,47,55,63,...
             16,24,32,40,48,56];
-P_channel = [32 48];
-N_channel = [7 8 9 15 16 17 23 24 25];
+% P_channel = [32 48];
+% N_channel = [7 8 9 15 16 17 23 24 25];
 for z =1:n_file
     file = all_file(z).name ;
     [pathstr, name, ext] = fileparts(file);
@@ -46,17 +50,19 @@ for z =1:n_file
         plot(time,(joint_Mutual_infos{channelnumber}-Redun_Mutual_infos{channelnumber}),'k-');
         plot(time,Redun_Mutual_infos{channelnumber},'g-');
         hold off;
-        if ismember(channelnumber,P_channel)
-            set(gca,'Color',[0.8 1 0.8])
-        elseif ismember(channelnumber,N_channel)
-            set(gca,'Color',[0.8 0.8 1])
-        else
-        end
+%         if ismember(channelnumber,P_channel)
+%             set(gca,'Color',[0.8 1 0.8])
+%         elseif ismember(channelnumber,N_channel)
+%             set(gca,'Color',[0.8 0.8 1])
+%         else
+%         end
         grid on
         xlim([ -500 500])
         ylim([0 inf+0.1])
         title(channelnumber)
-        %legend('U_x','U_v', 'S', 'R');
+        if channelnumber == 4
+            legend('U_x','U_v', 'S', 'R');
+        end
 
     end
     set(gcf,'units','normalized','outerposition',[0 0 1 1])
