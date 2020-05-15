@@ -3,11 +3,7 @@ code_folder = pwd;
 %exp_folder = 'D:\Leo\1012exp';
 num_peak = 2;
 exp_folder_cell = {'D:\Leo\0503', 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503' ,'D:\Leo\0409'};
-<<<<<<< HEAD
-for eee = 3
-=======
-for eee = 1
->>>>>>> 06b7126d4744ee48879c3c101cac2e3c8b7f4a57
+for eee = 2
 exp_folder = exp_folder_cell{eee};
 cd(exp_folder);
 mkdir MI

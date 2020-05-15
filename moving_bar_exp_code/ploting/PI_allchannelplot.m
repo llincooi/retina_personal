@@ -1,4 +1,4 @@
-%% This code plot three MI(pos, abs, speed) in same picture
+%% This code plot four PI in same picture
 %Position is red
 %Speed is blue
 %synergy is black

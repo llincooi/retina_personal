@@ -1,7 +1,7 @@
 clear all;
 close all;
 %load('D:\Leo\0229\merge\merge_0224_HMM_UR_DL_G2.5_5min_Q100_6.5mW.mat')
-load('merge_0224_HMM_UR_DL_G4.5_5min_Q100_6.5mW.mat')
+load('merge_0224_HMM_UL_DR_G4.5_5min_Q100_6.5mW.mat')
 fps =60;
 x = bin_pos(1:end);
 v = finite_diff(x ,4);
@@ -17,8 +17,6 @@ isir = BinningSpike(18,:);
 
 StimuSN = 6;
 sqrtStimuSN = 6;
-
-
 
 % [n,~] = hist(reconstruct_spikes{27},diode_BT) ;  %yk_spikes is the spike train made from"Merge_rePos_spikes"
 % isir= n ;
@@ -38,8 +36,6 @@ for jj=1:length(v)
     isiv(jj) = find(v(jj)<=intervals,1);
 end
 isii = sqrtStimuSN*(isiv-1) + isix;
-figure(3);histogram(isii, StimuSN)
-
 
 nX=sort(x);
 abin=length(nX)/StimuSN;
@@ -55,9 +51,6 @@ isiv=[];
 for jj=1:length(v)
     isiv(jj) = find(v(jj)<=intervals,1);
 end
-figure(1);histogram(isix, StimuSN)
-figure(2);histogram(isii, StimuSN)
-length(unique(isiv))
 
 
 bin = BinningInterval*1000;
@@ -79,7 +72,7 @@ plot(time,information_x_r, 'r');hold on;
 plot(time,information_v_r, 'b')
 plot(time,information_i_r, 'k')
 plot(time,information_x_r+ information_v_r, 'm')
-legend('MI(x, ð›¾)','MI(v, ð›¾)', 'MI([x,v], ð›¾)', 'MI(x, ð›¾)+MI(v, ð›¾)');
+legend('MI(x, ??›¾)','MI(v, ??›¾)', 'MI([x,v], ??›¾)', 'MI(x, ??›¾)+MI(v, ??›¾)');
 z = information_x_r + information_v_r -information_i_r;
 %z_minus_base = z- min(shuffle_information_x_r) - min(shuffle_information_v_r) + min(shuffle_information_i_r);
 synergy_I = redundant_I-z;

@@ -11,6 +11,7 @@ code_folder = pwd;
 sorted = 1;
 exp_folder = 'E:\20200418';
 exp_folder = 'D:\Leo\0409';
+exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0406';
 cd(exp_folder);
 load('RGC.mat')
 mkdir linear_decoding
@@ -20,6 +21,8 @@ cd ([exp_folder,'\sort_merge_spike'])
 all_file = subdir('*.mat'); % change the type of the files which you want to select, subdir or dir.
 n_file = length(all_file) ;
 %roi = [p_channel,np_channel];
+binshift_window = -60*0.5:60*0.5;
+binshift_window = binshift_window/samplingRate*1000;
 roi=[];
 for i = 1:60
     if sum(RGCs{i}.center_RF) >0
@@ -63,6 +66,7 @@ for z =26%1:n_file %choose file
     
     %% Reconstruction of trajectory
     [reconstrFrames, reconstrStimBins, populationFilter] = getLinearPopulationReadout(spikeCounts, stimFrames, filterLen);
+    
     %[reconstrFrames,reconstrStimBins,populationFilter] = getLinearPopulationFilter(spikeCounts, stimFrames, filterLen);
     %Cross correlation
     cc = mean((reconstrFrames-mean(reconstrFrames)).*(stimFrames(reconstrStimBins)-mean(stimFrames(reconstrStimBins)))/(std(stimFrames(reconstrStimBins))*std(reconstrFrames)));
