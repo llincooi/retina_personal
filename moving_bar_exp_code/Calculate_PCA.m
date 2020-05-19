@@ -2,8 +2,8 @@
 close all;
 clear all;
 code_folder = pwd;
-exp_folder = 'E:\20200418';
-exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0406';
+exp_folder = 'D:\Leo\0409';
+%exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0406';
 cd(exp_folder);
 %load('different_G.mat')
 %load(['predictive_channel\bright_bar.mat'])
@@ -45,7 +45,7 @@ for z = 1:n_file
     %     try
     %         load([exp_folder,'\STA\',name(12:end),'.mat'])
     %     catch
-    disp('Have not calculated')
+    %disp('Have not calculated')
     idxs = cell(1,60);
     PCA_STAs = cell(1,60);
     PC123_weight = cell(1,60);
@@ -123,4 +123,3 @@ for z = 1:n_file
         save([exp_folder,'\STA\unsort\',name(7:end),'.mat'],'STA_time','dis_STA','bin_pos','corr_time','idxs','PCA_STAs','positive_PCAs','negative_PCAs','positive_before_pos','negative_before_pos','BinningSpike','TheStimuli','BinningTime','forward','backward','bin','BinningInterval','score1','score2')
     end
 end
-

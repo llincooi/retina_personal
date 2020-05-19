@@ -6,7 +6,7 @@
 close all;
 clear all;
 code_folder = pwd;
-exp_folder = 'D:\Leo\0503';
+exp_folder = 'D:\Leo\0229';
 cd(exp_folder)
 sorted =0;
 mkdir FIG
@@ -69,7 +69,7 @@ for z =1:n_file
     fig =gcf;
     fig.PaperPositionMode = 'auto';
     fig.InvertHardcopy = 'off';
-    saveas(fig,['FIG\PI',name,'.tif'])
+    saveas(fig,['FIG\PI_',name,'.tif'])
     close(fig)
     %saveas(fig,['FIG\three_mix',name,'.fig'])
 

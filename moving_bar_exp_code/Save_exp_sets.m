@@ -1,8 +1,8 @@
 close all;
 clear all;
 %code_folder = pwd;
-exp_folder = 'D:\Leo\0409';
-exp_folder ='C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
+exp_folder = 'D:\Leo\0503';
+%exp_folder ='C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
 cd(exp_folder)
 mkdir Analyzed_data
 cd Analyzed_data
@@ -76,7 +76,7 @@ name = '5G_BB_sOU_0.03interupted'; %start with Independant variables and then th
 filename = '5G_BB_sOU__0.03interupted_properties';
 direction = 'RL';
 HMM_former_name = ['0224_OUsmooth_',direction, '_G'];
-HMM_post_name = '_5min_Q100_6.5mW_1Hz_0.03interupt';
+HMM_post_name = '_5min_Q100_6.5mW_1Hz_0.03interrupt';
 OU_former_name = ['0224_OU_', direction, '_G'];
 OU_post_name = '_5min_Q100_6.5mW';
 OU_different_G =  [2.5,9];
@@ -89,7 +89,7 @@ name = '5G_BB_sOU_0.09interupted'; %start with Independant variables and then th
 filename = '5G_BB_sOU__0.09interupted_properties';
 direction = 'RL';
 HMM_former_name = ['0224_OUsmooth_',direction, '_G'];
-HMM_post_name = '_5min_Q100_6.5mW_1Hz_0.09interupt';
+HMM_post_name = '_5min_Q100_6.5mW_1Hz_0.09interrupt';
 OU_former_name = ['0224_OU_', direction, '_G'];
 OU_post_name = '_5min_Q100_6.5mW';
 OU_different_G =  [2.5,9];

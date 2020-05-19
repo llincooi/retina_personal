@@ -1,8 +1,8 @@
 clear all;
 code_folder = pwd;
 sorted =0;
-exp_folder = 'E:\20200418';
-exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0406';
+exp_folder = 'D:\Leo\0409';
+%exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0406';
 cd (exp_folder)
 if sorted
     load('Analyzed_data\30Hz_27_RF_15min\sort\RF_properties.mat')

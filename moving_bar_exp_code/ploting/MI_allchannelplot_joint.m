@@ -6,16 +6,16 @@
 close all;
 clear all;
 code_folder = pwd;
-exp_folder = 'D:\Leo\0503';
-exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
+exp_folder = 'D:\Leo\0229';
+%exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
 cd(exp_folder)
 sorted =0;
-mkdir FIG
 if sorted
     cd MI\sort
 else
     cd MI\unsort
 end
+mkdir FIG
 all_file = dir('*.mat') ; % change the type of the files which you want to select, subdir or dir. 
 n_file = length(all_file) ;
 %Tina orientation
@@ -63,7 +63,7 @@ for z =1:n_file
     fig =gcf;
     fig.PaperPositionMode = 'auto';
     fig.InvertHardcopy = 'off';
-    saveas(fig,['FIG\MI',name,'.tif'])
+    saveas(fig,['FIG\MI_',name,'.tif'])
     close(fig)
     %saveas(fig,['FIG\three_mix',name,'.fig'])
 end

@@ -2,7 +2,7 @@ close all;
 clear all;
 % set(0,'DefaultFigureVisible','off')
 code_folder = pwd;
-exp_folder = 'E:\20200418';
+%exp_folder = 'D:\Leo\0409';
 exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0406';
 save_photo = 1;
 sorted = 0;
@@ -132,7 +132,7 @@ for z = 1:n_file
              if i < 10
                  saveas(fig,[exp_folder,'\STA\unsort\MI\FIG\MI_',name,'_ch0',int2str(i),'.tif'])
              else
-                saveas(fig,[exp_folder,'\STA\unsort\MI\FIG\MI_',name,'_ch',int2str(i),'.tif'])
+                 saveas(fig,[exp_folder,'\STA\unsort\MI\FIG\MI_',name,'_ch',int2str(i),'.tif'])
              end
          end
         close(fig)

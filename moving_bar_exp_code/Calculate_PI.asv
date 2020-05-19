@@ -2,7 +2,7 @@ clear all;
 code_folder = pwd;
 %exp_folder = 'D:\Leo\1012exp';
 exp_folder_cell = {'D:\Leo\0503', 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503' ,'D:\Leo\0229'};
-for eee = 1
+for eee = 3
 exp_folder = exp_folder_cell{eee};
 cd(exp_folder);
 mkdir MI
@@ -36,7 +36,6 @@ for z =1:n_file;%1:n_file %choose file
     else
         continue
     end
-    
     if (strcmp(filename(16:17),'wf') || strcmp(filename(15:16),'wf')) && sorted == 0 
         num_peak = 2;
     elseif (strcmp(filename(21:22),'wf') || strcmp(filename(20:21),'wf')) && sorted
@@ -52,6 +51,8 @@ for z =1:n_file;%1:n_file %choose file
     
     if strcmp(filename(end-12:end-4),'interrupt')
         bin_pos = abs(bin_pos);
+    else
+        continue
     end
     
     %% BinningStimulus
