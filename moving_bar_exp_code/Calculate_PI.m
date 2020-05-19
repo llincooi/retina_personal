@@ -1,13 +1,13 @@
 clear all;
 code_folder = pwd;
 %exp_folder = 'D:\Leo\1012exp';
-exp_folder_cell = {'D:\Leo\0503', 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503' ,'D:\Leo\0229'};
+exp_folder_cell = {'D:\Leo\0409', 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503' ,'D:\Leo\0503'};
 for eee = 1
 exp_folder = exp_folder_cell{eee};
 cd(exp_folder);
 mkdir MI
 cd MI
-sorted = 0;
+sorted = 1;
 unit = 0; %unit = 0 means using 'unit_a' which is writen down while picking waveform in Analyzed_data.
 if sorted
     mkdir sort
@@ -37,6 +37,7 @@ for z =1:n_file;%1:n_file %choose file
         continue
     end
     
+    %find two peak when it's wf
     if (strcmp(filename(16:17),'wf') || strcmp(filename(15:16),'wf')) && sorted == 0 
         num_peak = 2;
     elseif (strcmp(filename(21:22),'wf') || strcmp(filename(20:21),'wf')) && sorted

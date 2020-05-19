@@ -4,7 +4,7 @@ code_folder = pwd;
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
 exp_folder = 'D:\Leo\0503';
 cd(exp_folder)
-target_set = '7';
+target_set = '1';
 sorted =0;
 cd Analyzed_data
 all_file = dir('*.mat') ; % change the type of the files which you want to select, subdir or dir.
@@ -53,6 +53,8 @@ for     G =1:length(OU_different_G)
     corr_t_legend{G+length(HMM_different_G)} = ['OU-', num2str(corr_time)];
     time_serie{G+length(HMM_different_G)} = time;
 end
+
+%% plot ALL ch.
 figure('IntegerHandle', 'off', 'units','normalized','outerposition',[0 0 1 1])
 ha = tight_subplot(8,8,[.04 .02],[0.07 0.02],[.02 .02]);
 
@@ -83,26 +85,7 @@ for channelnumber=1:60 %choose file
     hold off;
     saveas(gcf,['FIG\',name,'.tif'])
 end
-%% Calculate MI_properties
 displychannel = find(sum(isnan(MI_peaks)) == 0);
-channel_anticipation_power(:,find(sum(isnan(MI_peaks)) > 0)) = NaN;
-%channel_anticipation_power(1,:): 
-%     NaN -> useless cell
-%     0   -> NP cell
-%     >0  -> P cell
-%     <0  -> Odd cell
-for channelnumber = displychannel
-    if mean(peak_times(:, channelnumber)) < 0 % NP cell (all t_shift < 0)
-        if std(peak_times(:, channelnumber)) > 50 % exclude Odd cell
-            channel_anticipation_power(1,channelnumber) = -1; 
-        end
-    else % P cell
-        f = fit(t_corr_serie',peak_times(:,channelnumber ),'poly1'); %fit a line
-        channel_anticipation_power(1,channelnumber) = atan(f.p1/1000); % define the anticipation power to be the angle. (angle> 0) % exclude Odd cell here
-        channel_anticipation_power(2,channelnumber) = f.p2; % the time delay for complete zero auto correlated noise.
-    end
-end
-
 %% Chose by hand and plot single channels
 for channelnumber=displychannel%
     figure(channelnumber)
@@ -148,6 +131,24 @@ for channelnumber=displychannel%
 %     set(gca,'fontsize',12 );
 end
 
+%% Calculate MI_properties
+channel_anticipation_power(:,find(sum(isnan(MI_peaks)) > 0)) = NaN;
+%channel_anticipation_power(1,:): 
+%     NaN -> useless cell
+%     0   -> NP cell
+%     >0  -> P cell
+%     <0  -> Odd cell
+for channelnumber = displychannel
+    if mean(peak_times(:, channelnumber)) < 0 % NP cell (all t_shift < 0)
+        if std(peak_times(:, channelnumber)) > 50 % exclude Odd cell
+            channel_anticipation_power(1,channelnumber) = -1; 
+        end
+    else % P cell
+        f = fit(t_corr_serie',peak_times(:,channelnumber ),'poly1'); %fit a line
+        channel_anticipation_power(1,channelnumber) = atan(f.p1/1000); % define the anticipation power to be the angle. (angle> 0) % exclude Odd cell here
+        channel_anticipation_power(2,channelnumber) = f.p2; % the time delay for complete zero auto correlated noise.
+    end
+end
 if sorted
     save([exp_folder,'\Analyzed_data\sort\',filename,'.mat'],'MI_widths', 'MI_peaks', 'peak_times', 'channel_anticipation_power');
 else

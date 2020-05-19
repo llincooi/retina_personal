@@ -2,7 +2,7 @@
 %sorted_spikes stores all spikes in A unit. It is a 1*60(channel) cell
 clear all;
 close all;
-exp_folder = 'D:\Leo\0409';
+exp_folder = 'D:\Leo\0503';
 cd(exp_folder);
 mkdir sort_merge_spike
 cd merge
