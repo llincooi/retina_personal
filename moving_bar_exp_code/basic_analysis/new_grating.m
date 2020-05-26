@@ -90,20 +90,20 @@ for i = 1:length(lumin)-100
     pass = pass - 1;
 end
 % Find when it ends
-is_complete = 0;
-for i = 1:length(lumin)
-    if (lumin(i+30)-lumin(i))/30 > 2 && (lumin(i+100)-lumin(i))/100 < 2 && (lumin(i+70)-lumin(i))/70 > 2 && lumin(i+100) < thre_up
-        diode_end = i;
-        is_complete = 1;
-        break
-    end
-end                                                                                                         
-if is_complete == 0
-    disp('There are no normal signal')
-    pass = 0;
-    return
-end
-
+% is_complete = 0;
+% for i = 1:length(lumin)
+%     if (lumin(i+30)-lumin(i))/30 > 2 && (lumin(i+100)-lumin(i))/100 < 2 && (lumin(i+70)-lumin(i))/70 > 2 && lumin(i+100) < thre_up
+%         diode_end = i;
+%         is_complete = 1;
+%         break
+%     end
+% end                                                                                                         
+% if is_complete == 0
+%     disp('There are no normal signal')
+%     pass = 0;
+%     return
+% end
+diode_end = 1.028485E7;
 
 %% Plot when each grating start
 figure(1);plot(lumin)
@@ -137,15 +137,12 @@ BinningTime = [0 : BinningInterval : 20/3-4/3];%6.67 sec stimulus - 1.33 sec ada
 All_BinningSpike = zeros(8,60,length(BinningTime));%It stores 8 directions of all trial spikes
 counter= zeros(num_direction, 60);%It stores sum of total spikes from eight directions
 for j = 1:length(display_trial)
-    
     BinningSpike = zeros(60,length(BinningTime));
     for k = channel_number % i is the channel number
         [n,~] = hist(trial_spikes{display_trial(j),k},BinningTime) ;
         BinningSpike(k,:) = n;
         All_BinningSpike(mod(display_trial(j)-1,8)+1,k,:) = All_BinningSpike(mod(display_trial(j)-1,8)+1,k,:)+reshape(n,[1,1,length(BinningTime)]);
         counter(mod(display_trial(j)-1,8)+1,k) = counter(mod(display_trial(j)-1,8)+1,k) + sum(n);
-        
-        
     end
 end
 
