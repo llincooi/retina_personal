@@ -2,6 +2,7 @@ clear all;
 close all;
 %load('D:\Leo\0229\merge\merge_0224_HMM_UR_DL_G2.5_5min_Q100_6.5mW.mat')
 load('merge_0224_HMM_UL_DR_G4.5_5min_Q100_6.5mW.mat')
+%load('merge_0224_OUsmooth_RL_G4.5_5min_Q100_6.5mW_1Hz.mat')
 fps =60;
 x = bin_pos(1:end);
 v = finite_diff(x ,4);
@@ -16,41 +17,27 @@ end
 isir = BinningSpike(18,:);
 
 StimuSN = 6;
-sqrtStimuSN = 6;
+StimuSN = 6;
 
 % [n,~] = hist(reconstruct_spikes{27},diode_BT) ;  %yk_spikes is the spike train made from"Merge_rePos_spikes"
 % isir= n ;
 
 nX=sort(x);
-abin=length(nX)/sqrtStimuSN;
+abin=length(nX)/StimuSN;
 intervals=[nX(abin:abin:end) inf]; % inf: the last term: for all rested values
 temp=0; isix=[];
 for jj=1:length(x)
     isix(jj) = find(x(jj)<=intervals,1);
 end
 nX=sort(v);
-abin=length(nX)/sqrtStimuSN;
+abin=length(nX)/StimuSN;
 intervals=[nX(abin:abin:end) inf]; % inf: the last term: for all rested values
 isiv=[];
 for jj=1:length(v)
     isiv(jj) = find(v(jj)<=intervals,1);
 end
-isii = sqrtStimuSN*(isiv-1) + isix;
+isii = StimuSN*(isiv-1) + isix;
 
-nX=sort(x);
-abin=length(nX)/StimuSN;
-intervals=[nX(abin:abin:end) inf]; % inf: the last term: for all rested values
-temp=0; isix=[];
-for jj=1:length(x)
-    isix(jj) = find(x(jj)<=intervals,1);
-end
-nX=sort(v);
-abin=length(nX)/StimuSN;
-intervals=[nX(abin:abin:end) inf]; % inf: the last term: for all rested values
-isiv=[];
-for jj=1:length(v)
-    isiv(jj) = find(v(jj)<=intervals,1);
-end
 
 
 bin = BinningInterval*1000;
