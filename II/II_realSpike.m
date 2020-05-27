@@ -17,7 +17,6 @@ end
 isir = BinningSpike(18,:);
 
 StimuSN = 6;
-StimuSN = 6;
 
 % [n,~] = hist(reconstruct_spikes{27},diode_BT) ;  %yk_spikes is the spike train made from"Merge_rePos_spikes"
 % isir= n ;
@@ -44,35 +43,21 @@ bin = BinningInterval*1000;
 backward=ceil(5000/bin);
 forward=ceil(5000/bin);
 time=[-backward*bin:bin:forward*bin];
-[information_x_r information_v_r redundant_I] = PIfunc(isir,isix, isiv,BinningInterval,backward,forward);
-information_i_r = MIfunc(isir,isii,BinningInterval,backward,forward);
-%information_x_v = MIfunc(isix, isiv,BinningInterval,backward,forward);
-% shuffle_isir = isir(randperm(length(isir)));
-% shuffle_information_x_r = MIfunc(shuffle_isir,isix,BinningInterval,backward,forward);
-% shuffle_information_v_r = MIfunc(shuffle_isir,isiv,BinningInterval,backward,forward);
-% shuffle_information_i_r = MIfunc(shuffle_isir,isii,BinningInterval,backward,forward);
-% information_x_r = information_x_r - min(shuffle_information_x_r);
-% information_v_r = information_v_r - min(shuffle_information_v_r);
-% information_i_r = information_i_r - min(shuffle_information_i_r);
-figure(4);
-plot(time,information_x_r, 'r');hold on;
-plot(time,information_v_r, 'b')
-plot(time,information_i_r, 'k')
-plot(time,information_x_r+ information_v_r, 'm')
-legend('MI(x, ??›¾)','MI(v, ??›¾)', 'MI([x,v], ??›¾)', 'MI(x, ??›¾)+MI(v, ??›¾)');
-z = information_x_r + information_v_r -information_i_r;
-%z_minus_base = z- min(shuffle_information_x_r) - min(shuffle_information_v_r) + min(shuffle_information_i_r);
-synergy_I = redundant_I-z;
-PI_x = information_x_r - redundant_I;
-%a = information_x_v - z ;
-PI_v = information_v_r - redundant_I;
-figure(6);
-plot(time,PI_x, 'r');hold on;
-plot(time,PI_v, 'b')
-plot(time,synergy_I, 'k')
-plot(time,redundant_I, 'g')
-legend('PI x','PI v', 'synergy I', 'redundant I');
 
-% 
-% figure(7)
-% plot(z./)
+[MIxr, MIvr, MIxvR, Redun] = NewPIfunc(isir,isix, isiv,BinningInterval,backward,forward);
+figure(4);
+plot(time,MIxr, 'r');hold on;
+plot(time,MIvr, 'b')
+plot(time,MIxvR, 'k')
+plot(time,MIxr+MIvr, 'm')
+legend('MI(x, r)','MI(v, r)', 'MI([x,v], r)', 'MI(x, r)+MI(v, r)');
+
+Syner = MIxvR-MIxr-MIvr+Redun;
+U_x = MIxr - Redun;
+U_v = MIvr - Redun;
+figure(6);
+plot(time,U_x, 'r');hold on;
+plot(time,U_v, 'b')
+plot(time,Syner, 'k')
+plot(time,Redun, 'g')
+legend('PI x','PI v', 'synergy I', 'redundant I');
