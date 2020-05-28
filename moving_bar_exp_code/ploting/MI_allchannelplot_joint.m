@@ -6,7 +6,7 @@
 close all;
 clear all;
 code_folder = pwd;
-exp_folder = 'D:\Leo\0409';     
+exp_folder = 'D:\Leo\0503';     
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
 cd(exp_folder)
 sorted =1;
@@ -48,8 +48,8 @@ for z =1:n_file
             %         end
             plot(time,(pos_Mutual_infos{channelnumber}-min(Redun_Mutual_infos{channelnumber})),'r');hold on;
             plot(time,(v_Mutual_infos{channelnumber}-min(Redun_Mutual_infos{channelnumber})),'b-');
-            plot(time,(joint_Mutual_infos{channelnumber}-min(joint_Mutual_infos{channelnumber})),'k-');
-            plot(time,(pos_Mutual_infos{channelnumber}-min(Redun_Mutual_infos{channelnumber}))+(v_Mutual_infos{channelnumber}-min(Redun_Mutual_infos{channelnumber})),'m-');
+            plot(time,(joint_Mutual_infos{channelnumber}),'k-');
+            plot(time,(pos_Mutual_infos{channelnumber}+(v_Mutual_infos{channelnumber})),'m-');
             hold off;
             %         if ismember(channelnumber,P_channel)
             %             set(gca,'Color',[0.8 1 0.8])
@@ -58,7 +58,7 @@ for z =1:n_file
             %         else
             %         end
             grid on
-            xlim([ -500 500])
+            xlim([ -1000 1000])
             ylim([0 inf+0.1])
             title(channelnumber)
         end

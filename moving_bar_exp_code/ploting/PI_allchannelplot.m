@@ -6,9 +6,9 @@
 close all;
 clear all;
 code_folder = pwd;
-exp_folder = 'D:\Leo\0409';
+exp_folder = 'D:\Leo\0229';
 cd(exp_folder)
-sorted =1;
+sorted =0;
 if sorted
     cd MI\sort
 else
@@ -54,7 +54,7 @@ for z =1:n_file
             %         end
             plot(time,(pos_Mutual_infos{channelnumber}-Redun_Mutual_infos{channelnumber}),'r');hold on;
             plot(time,(v_Mutual_infos{channelnumber}-Redun_Mutual_infos{channelnumber}),'b-');
-            plot(time,(joint_Mutual_infos{channelnumber}-Redun_Mutual_infos{channelnumber}),'k-');
+            plot(time,(joint_Mutual_infos{channelnumber}+Redun_Mutual_infos{channelnumber})-pos_Mutual_infos{channelnumber}-v_Mutual_infos{channelnumber},'k-');
             plot(time,Redun_Mutual_infos{channelnumber},'g-');
             hold off;
             %         if ismember(channelnumber,P_channel)
@@ -64,7 +64,7 @@ for z =1:n_file
             %         else
             %         end
             grid on
-            xlim([ -500 500])
+            xlim([ -1000 1000])
             ylim([0 inf+0.1])
             title(channelnumber)
         end

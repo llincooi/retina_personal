@@ -2,12 +2,12 @@ clear all;
 code_folder = pwd;
 %exp_folder = 'D:\Leo\1012exp';
 exp_folder_cell = {'D:\Leo\0409', 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503' ,'D:\Leo\0503'};
-for eee = 3
+for eee = 1
 exp_folder = exp_folder_cell{eee};
 cd(exp_folder);
 mkdir MI
 cd MI
-sorted = 1;
+sorted = 0;
 unit = 0; %unit = 0 means using 'unit_a' which is writen down while picking waveform in Analyzed_data.
 if sorted
     mkdir sort
