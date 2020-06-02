@@ -2,7 +2,7 @@ clear all;
 code_folder = pwd;
 %exp_folder = 'D:\Leo\1012exp';
 num_peak = 2;
-exp_folder_cell = {'D:\Leo\0503', 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503' ,'D:\Leo\0409'};
+exp_folder_cell = {'D:\Leo\0503', 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0409' ,'D:\Leo\0409'};
 type_folder_cell = {'pos', 'v', 'pos&v'};%'abs', 'pos', 'v', 'pos&v'.
 for ttt = 2:3
 for eee = 3

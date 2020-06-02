@@ -1,13 +1,14 @@
 clear all;
 code_folder = pwd;
 %exp_folder = 'D:\Leo\1012exp';
-exp_folder_cell = {'D:\Leo\0409', 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503' ,'D:\Leo\0503'};
-for eee = 1
+exp_folder_cell = {'D:\Leo\0409', 'C:\Users\llinc\GitHub\retina_personal\0409' ,'D:\Leo\0503'};
+for eee = 2
 exp_folder = exp_folder_cell{eee};
 cd(exp_folder);
 mkdir MI
 cd MI
 sorted = 0;
+special = 1;
 unit = 0; %unit = 0 means using 'unit_a' which is writen down while picking waveform in Analyzed_data.
 if sorted
     mkdir sort
@@ -15,10 +16,17 @@ if sorted
     all_file = subdir('*.mat') ; % change the type of the files which you want to select, subdir or dir.
     n_file = length(all_file) ;
 else
-    mkdir unsort
-    cd ([exp_folder,'\merge'])
-    all_file = subdir('*.mat') ; % change the type of the files which you want to select, subdir or dir.
-    n_file = length(all_file) ;
+    if special
+        mkdir special
+        cd ([exp_folder,'\OU_merge_OUsmooth'])
+        all_file = subdir('*.mat') ; % change the type of the files which you want to select, subdir or dir.
+        n_file = length(all_file) ;
+    else
+        mkdir unsort
+        cd ([exp_folder,'\merge'])
+        all_file = subdir('*.mat') ; % change the type of the files which you want to select, subdir or dir.
+        n_file = length(all_file) ;
+    end
 end
 cd(code_folder);
 for z =1:n_file;%1:n_file %choose file
@@ -144,7 +152,11 @@ for z =1:n_file;%1:n_file %choose file
     if sorted
         save([exp_folder,'\MI\sort\',name(12:end),'.mat'],'time','pos_Mutual_infos','v_Mutual_infos', 'joint_Mutual_infos','Redun_Mutual_infos','peak_time', 'MI_peak','MI_width', 'ind_local_max2','corr_time')
     else
-        save([exp_folder,'\MI\unsort\',name(7:end),'.mat'],'time','pos_Mutual_infos','v_Mutual_infos', 'joint_Mutual_infos','Redun_Mutual_infos','peak_time', 'MI_peak','MI_width', 'ind_local_max2',  'corr_time')
+        if special
+            save([exp_folder,'\MI\special\',name(7:end),'.mat'],'time','pos_Mutual_infos','v_Mutual_infos', 'joint_Mutual_infos','Redun_Mutual_infos','peak_time', 'MI_peak','MI_width', 'ind_local_max2',  'corr_time')
+        else
+            save([exp_folder,'\MI\unsort\',name(7:end),'.mat'],'time','pos_Mutual_infos','v_Mutual_infos', 'joint_Mutual_infos','Redun_Mutual_infos','peak_time', 'MI_peak','MI_width', 'ind_local_max2',  'corr_time')
+        end
     end
 end
 end

@@ -3,8 +3,9 @@ clear all;
 code_folder = pwd;
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
 exp_folder = 'D:\Leo\0409';
+exp_folder ='C:\Users\llinc\GitHub\retina_personal\0409';
 cd(exp_folder)
-target_set = '3';
+target_set = '6';
 sorted =1;
 cd Analyzed_data
 all_file = dir('*.mat') ; % change the type of the files which you want to select, subdir or dir.

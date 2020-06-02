@@ -1,17 +1,18 @@
 close all;
 clear all;
 code_folder = pwd;
-exp_folder = 'D:\Leo\0229';
+exp_folder = 'C:\Users\llinc\GitHub\retina_personal\0409';
 cd(exp_folder)
-XOwf =1;
+XOwf =0;
 XOdark = 0;
-direction = 'UR_DL';
+direction = 'RL';
 sorted =0;
-num_peak = 2
+special = 1;
+num_peak = 1
 if XOwf
-    HMM_former_name = 'pos_0224_HMM_wf_G';
+    HMM_former_name = '0224_OU_G';
     HMM_post_name = ['_5min_Q100'];
-    OU_former_name = 'pos_0224_OU_wf_G';
+    OU_former_name = '0224_OU_wf_G';
     OU_post_name = ['_5min_Q100'];
     OU_different_G = [3 7.5];
     name = '5G_WF';
@@ -25,11 +26,11 @@ elseif XOdark
     name = '5G_DB';
     filename = 'DB_5GMI_properties';
 else
-    HMM_former_name = ['pos_0224_HMM_',direction, '_G'];
+    HMM_former_name = ['0224_OU_',direction, '_G'];
     HMM_post_name = '_5min_Q100_6.5mW';
-    OU_former_name = ['pos_0224_OU_', direction, '_G'];
-    OU_post_name = '_5min_Q100_6.5mW';
-    OU_different_G = [3 7.5];
+    %     OU_former_name = ['pos_0224_OU_', direction, '_G'];
+    %     OU_post_name = '_5min_Q100_6.5mW';
+    %     OU_different_G = [3 7.5];
     name = '5G_BB';
     filename = 'BB_5GMI_properties';
 end
@@ -38,66 +39,66 @@ HMM_different_G = [2.5,4.5,9,12,20];
 if sorted
     cd MI\sort
 else
-    cd MI\unsort
+    if special
+        cd MI\special
+    else
+        cd MI\unsort
+    end
 end
-rr =[9,17,25,33,41,49,...
-    2,10,18,26,34,42,50,58,...
-    3,11,19,27,35,43,51,59,...
-    4,12,20,28,36,44,52,60,...
-    5,13,21,29,37,45,53,61,...
-    6,14,22,30,38,46,54,62,...
-    7,15,23,31,39,47,55,63,...
-    16,24,32,40,48,56];
+
+load('rr.mat')
 
 HMM_MI =[];
-HMM_MI_shuffle = [];
+baselines = [];
 allchannellegend = cell(1,length(HMM_different_G));
-corr_t_legend = cell(1,length(HMM_different_G)+length(OU_different_G));
+corr_t_legend = cell(1,length(HMM_different_G));%+length(OU_different_G));
 t_corr_serie =[];
-time_serie = cell(length(HMM_different_G)+length(OU_different_G),1);
+time_serie = cell(length(HMM_different_G));%+length(OU_different_G),1);
+MI_widths = [];
+MI_peaks = [];
+peak_times = [];
 for     G =1:length(HMM_different_G)
     load([HMM_former_name,num2str(HMM_different_G(G)),HMM_post_name ,'.mat'])
-    
-    HMM_MI = [HMM_MI;Mutual_infos];
-    HMM_MI_shuffle = [HMM_MI_shuffle ;Mutual_shuffle_infos];
+    HMM_MI = [HMM_MI;pos_Mutual_infos];
+    baselines = [baselines ;min(cell2mat(Redun_Mutual_infos'), [], 2)'];
+    MI_widths = [MI_widths; MI_width];
+    MI_peaks = [MI_peaks; MI_peak];
+    peak_times = [peak_times; peak_time];
     allchannellegend{G} = ['G', num2str(HMM_different_G(G))];
     corr_t_legend{G} = num2str(corr_time);
     t_corr_serie = [t_corr_serie corr_time];
     time_serie{G} = time;
 end
 
-OU_MI =[];
-OU_MI_shuffle = [];
-for     G =1:length(OU_different_G)
-    load([OU_former_name,num2str(OU_different_G(G)),OU_post_name ,'.mat'])
-    
-    OU_MI = [OU_MI;Mutual_infos];
-    OU_MI_shuffle = [OU_MI_shuffle ;Mutual_shuffle_infos];
-    corr_t_legend{G+length(HMM_different_G)} = ['OU-', num2str(corr_time)];
-    time_serie{G+length(HMM_different_G)} = time;
-end
+
+% OU_MI =[];
+% OU_MI_shuffle = [];
+% for     G =1:length(OU_different_G)
+%     load([OU_former_name,num2str(OU_different_G(G)),OU_post_name ,'.mat'])
+%
+%     OU_MI = [OU_MI;pos_Mutual_infos];
+%     OU_MI_shuffle = [OU_MI_shuffle ;pos_Mutual_shuffle_infos];
+%     corr_t_legend{G+length(HMM_different_G)} = ['OU-', num2str(corr_time)];
+%     time_serie{G+length(HMM_different_G)} = time;
+% end
 figure('IntegerHandle', 'off', 'units','normalized','outerposition',[0 0 1 1])
 ha = tight_subplot(8,8,[.04 .02],[0.07 0.02],[.02 .02]);
-
-MI_peak=zeros(length(HMM_different_G),60);
-ind_peak=zeros(length(HMM_different_G),60);
-peak_times = zeros(length(HMM_different_G),60);
 for channelnumber=1:60 %choose file
     axes(ha(rr(channelnumber)));
     for     G =1:length(HMM_different_G)
-        mean_MI_shuffle = mean(cell2mat(HMM_MI_shuffle(G,channelnumber)));
+        baseinfo = baselines(G,channelnumber);
         mutual_information = cell2mat(HMM_MI (G,channelnumber));
         if channelnumber~=4
-            if max(mutual_information-mean_MI_shuffle)<0.1
+            if max(mutual_information-baseinfo)<0.1
                 continue;
             else
-                plot(time_serie{G},mutual_information-mean_MI_shuffle); hold on; %,'color',cc(z,:));hold on
+                plot(time_serie{G},mutual_information-baseinfo); hold on; %,'color',cc(z,:));hold on
                 xlim([ -2300 1300])
                 ylim([0 inf+0.1])
                 title(channelnumber);
             end
         else
-            plot(time,mutual_information-mean_MI_shuffle); hold on; %,'color',cc(z,:));hold on
+            plot(time,mutual_information-baseinfo); hold on; %,'color',cc(z,:));hold on
             xlim([ -1500 2000])
             ylim([0 100])
             lgd =legend(allchannellegend,'Location','north');
@@ -106,7 +107,6 @@ for channelnumber=1:60 %choose file
         end
     end
     hold off;
-    saveas(gcf,['FIG\',name,'.tif'])
 end
 %find MI peak, peak time and MI width
 ind_local_max2 =cell(length(HMM_different_G),60);
@@ -163,13 +163,13 @@ for channelnumber=1:60%
             xlim([ -2300 1300])
             ylim([0 inf+0.1])
         end
-        for   G =1:length(OU_different_G)
-            mean_MI_shuffle = mean(cell2mat(OU_MI_shuffle(G,channelnumber)));
-            mutual_information = cell2mat(OU_MI (G,channelnumber));hold on;
-            plot(time_serie{G+length(HMM_different_G)},smooth(mutual_information - mean_MI_shuffle ),'LineWidth',1.5,'LineStyle',':');
-            xlim([ -1300 1300])
-            ylim([0 inf+0.1])
-        end
+        %         for   G =1:length(OU_different_G)
+        %             mean_MI_shuffle = mean(cell2mat(OU_MI_shuffle(G,channelnumber)));
+        %             mutual_information = cell2mat(OU_MI (G,channelnumber));hold on;
+        %             plot(time_serie{G+length(HMM_different_G)},smooth(mutual_information - mean_MI_shuffle ),'LineWidth',1.5,'LineStyle',':');
+        %             xlim([ -1300 1300])
+        %             ylim([0 inf+0.1])
+        %         end
         title(channelnumber);
         xlabel('\deltat (ms)');ylabel('MI (bits/second)');
         set(gca,'fontsize',12 ); hold on
