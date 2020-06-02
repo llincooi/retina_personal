@@ -6,7 +6,7 @@
 close all;
 clear all;
 code_folder = pwd;
-exp_folder = 'D:\Leo\0229';
+exp_folder = 'D:\Leo\0409';
 cd(exp_folder)
 sorted =0;
 if sorted
@@ -42,7 +42,7 @@ for z =1:n_file
             axes(ha(rr(channelnumber)));
             plot(time,(pos_Mutual_infos{channelnumber}-Redun_Mutual_infos{channelnumber}),'r');hold on;
             plot(time,(v_Mutual_infos{channelnumber}-Redun_Mutual_infos{channelnumber}),'b-');
-            plot(time,(joint_Mutual_infos{channelnumber}-Redun_Mutual_infos{channelnumber}),'k-');
+            plot(time,(joint_Mutual_infos{channelnumber}+Redun_Mutual_infos{channelnumber}+pos_Mutual_infos{channelnumber}+v_Mutual_infos{channelnumber}),'k-');
             plot(time,Redun_Mutual_infos{channelnumber},'g-');
             legend('U_x','U_v', 'S', 'R');
         elseif max(v_Mutual_infos{channelnumber}-min(Redun_Mutual_infos{channelnumber}))<0.1 && max(pos_Mutual_infos{channelnumber}-min(Redun_Mutual_infos{channelnumber}))<0.1

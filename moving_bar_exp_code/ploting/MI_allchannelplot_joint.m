@@ -6,10 +6,10 @@
 close all;
 clear all;
 code_folder = pwd;
-exp_folder = 'D:\Leo\0503';     
+exp_folder = 'D:\Leo\0409';     
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
 cd(exp_folder)
-sorted =1;
+sorted = 0;
 if sorted
     cd MI\sort
 else
