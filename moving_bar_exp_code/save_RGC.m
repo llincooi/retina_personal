@@ -3,12 +3,19 @@ clear all;
 load('rr.mat')
 code_folder = pwd;
 date = '20200409';
-exp_folder = 'D:\Leo\0503';
-exp_folder = 'C:\Users\llinc\GitHub\retina_personal\0503';
+exp_folder = 'D:\Leo\0409';
+%exp_folder = 'C:\Users\llinc\GitHub\retina_personal\0503';
 cd(exp_folder)
-load('Analyzed_data\0224_Gollish_OnOff_movie_5min_Br50_Q100_6.5mW.mat')
-load('Analyzed_data\sort\0224_cSTA_wf_3min_Q100.mat')
-load('Analyzed_data\30Hz_27_RF\sort\RF_properties.mat')
+sorted = 1;
+if sorted
+    load('Analyzed_data\sort\0224_Gollish_OnOff_movie_5min_Br50_Q100_6.5mW.mat')
+    load('Analyzed_data\sort\0224_cSTA_wf_3min_Q100.mat')
+    load('Analyzed_data\30Hz_27_RF\sort\RF_properties.mat')
+else
+    load('Analyzed_data\unsort\0224_Gollish_OnOff_movie_5min_Br50_Q100_6.5mW.mat')
+    load('Analyzed_data\unsort\0224_cSTA_wf_3min_Q100.mat')
+    load('Analyzed_data\30Hz_27_RF_15min\unsort\RF_properties.mat')
+end
 
 RGCs = cell(1,60);
 for channel = 1:60
@@ -26,12 +33,16 @@ for channel = 1:60
         r.RF_size = RF_properties(channel,7);
     end
     
-% %    load('predictive_channel\bright_bar.mat')
-%     if ismember(channel,p_channel)
-%         r.bright_bar_predictive = 1;
-%     elseif ismember(channel,np_channel)
-%         r.bright_bar_predictive = 0;
-%     end
+    % %    load('predictive_channel\bright_bar.mat')
+    %     if ismember(channel,p_channel)
+    %         r.bright_bar_predictive = 1;
+    %     elseif ismember(channel,np_channel)
+    %         r.bright_bar_predictive = 0;
+    %     end
     RGCs{channel} = r;
 end
-save('RGC.mat','RGCs')
+if sorted
+    save('sortRGC.mat','RGCs')
+else
+    save('unsortRGC.mat','RGCs')
+end

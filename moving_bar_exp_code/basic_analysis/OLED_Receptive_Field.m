@@ -7,11 +7,11 @@ load('oled_boundary_set.mat')
 displaychannel =1:60;%Choose which channel to display
 save_photo =1;%0 is no save RF photo, 1 is save
 save_svd =1;%0 is no save svd photo, 1 is save
-sorted = 1;
+sorted = 0;
 unit = 0;
 
-name = '30Hz_27_RF';%Directory name
-exp_folder = 'D:\Leo\0503';
+name = '30Hz_27_RF_15min';%Directory name
+exp_folder = 'D:\Leo\0409';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503'
 cd(exp_folder)
 if ~sorted

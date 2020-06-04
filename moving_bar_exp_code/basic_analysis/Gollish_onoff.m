@@ -4,7 +4,7 @@ clear all;
 close all;
 load('rr.mat');
 code_folder = pwd;
-exp_folder =  'D:\Leo\0503';
+exp_folder =  'D:\Leo\0409';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503'
 save_photo =1;%0 is no save on off photo and data, 1 is save
 cd(exp_folder)
@@ -21,7 +21,7 @@ if sorted
     sort_directory = 'sort';
     Spikes = get_multi_unit(exp_folder,Spikes,0);
 else
- %% For unsorted spikes
+    %% For unsorted spikes
     load(['data\',name,'.mat'])
     sort_directory = 'unsort';
 end
@@ -30,13 +30,15 @@ lumin=a_data(3,:);%Careful: cant subtract a value to the lumin series, or the co
 
 %% Create directory
 if save_photo
-mkdir Analyzed_data
-mkdir FIG
-cd FIG
-mkdir ONOFF
-cd ONOFF
-mkdir sort
-mkdir unsort
+    mkdir Analyzed_data
+    mkdir Analyzed_data sort
+    mkdir Analyzed_data unsort
+    mkdir FIG
+    cd FIG
+    mkdir ONOFF
+    cd ONOFF
+    mkdir sort
+    mkdir unsort
 end
 
 %%  Find when is its final end
@@ -61,7 +63,7 @@ thre_down = min(useful_lumin)*0.15+mode(useful_lumin)*0.85;%Off threhold
 
 %% Find when on starts
 diode_on_start =zeros(1,num_cycle);%It stores when on starts
-num = 1; 
+num = 1;
 pass = 0;
 for i = 1:length(useful_lumin)-100
     if(useful_lumin(i+80)-useful_lumin(i))/80 > 0.3 && pass < 200 &&  useful_lumin(i)>thre_up
@@ -76,7 +78,7 @@ if length(diode_on_start) ~= num_cycle
 end
 %% Find when off starts
 diode_off_start =zeros(1,num_cycle);%It stores when off starts
-num = 1; 
+num = 1;
 pass = 0;
 for i = 1:length(useful_lumin)-300
     if (useful_lumin(i)-useful_lumin(i+50))/50 > 0.3 &&(useful_lumin(i)-useful_lumin(i+100))/100 > 0.3 && pass < 200 &&  useful_lumin(i)<thre_down
@@ -139,14 +141,14 @@ ylim([0 2])
 on_s=0;
 off_s = 0;
 for channelnumber=1:60
-on_s= on_s+ onBinningSpike(channelnumber,:);
-off_s= off_s+ offBinningSpike(channelnumber,:);
+    on_s= on_s+ onBinningSpike(channelnumber,:);
+    off_s= off_s+ offBinningSpike(channelnumber,:);
 end
 figure(4);
 subplot(3,1,1),plot(onBinningTime,on_s);
-xlabel('On---time(s)'); 
+xlabel('On---time(s)');
 subplot(3,1,2),plot(offBinningTime,off_s);
-xlabel('Off---time(s)'); 
+xlabel('Off---time(s)');
 subplot(3,1,3),plot(onBinningTime,on_off)
 ylim([0 2])
 
@@ -171,7 +173,7 @@ for channelnumber=1:60
     off_ss(off_ss<0.05) = [];
     off_ss(off_ss>0.55)=[];
     on_spikes(channelnumber) = length(on_ss);
-    off_spikes(channelnumber) =  length(off_ss); 
+    off_spikes(channelnumber) =  length(off_ss);
     on_off_index(channelnumber) = (on_spikes(channelnumber)-off_spikes(channelnumber))/(on_spikes(channelnumber)+off_spikes(channelnumber));
     if ~isnan(on_off_index(channelnumber))
         if on_off_index(channelnumber)>0.3%Criteria from 'Causal evidence for retina-dependent and -independent visual motion computations in mouse cortex'
@@ -179,10 +181,10 @@ for channelnumber=1:60
             disp(['Channel ',int2str(channelnumber),' on_off index is ',num2str(on_off_index(channelnumber))])
         elseif on_off_index(channelnumber)<-0.3
             disp(['Channel ',int2str(channelnumber),' is off cell '])
-             disp(['Channel ',int2str(channelnumber),' on_off index is ',num2str(on_off_index(channelnumber))])   
-        else 
+            disp(['Channel ',int2str(channelnumber),' on_off index is ',num2str(on_off_index(channelnumber))])
+        else
             disp(['Channel ',int2str(channelnumber),' is on-off cell '])
-             disp(['Channel ',int2str(channelnumber),' on_off index is ',num2str(on_off_index(channelnumber))])
+            disp(['Channel ',int2str(channelnumber),' on_off index is ',num2str(on_off_index(channelnumber))])
         end
     end
 end
@@ -194,7 +196,7 @@ ha = tight_subplot(8,8,[.04 .02],[0.07 0.02],[.02 .02]);
 
 for channelnumber=1:60
     
-    axes(ha(rr(channelnumber))); 
+    axes(ha(rr(channelnumber)));
     if ~ismember(channelnumber,useless_channel)%If spikes are not enough
         plot(onBinningTime,onBinningSpike(channelnumber,:),'b');hold on;%Blue is on
         plot(offBinningTime,offBinningSpike(channelnumber,:),'r');%Red is off
@@ -208,18 +210,18 @@ for channelnumber=1:60
         end
     end
     xlim([0 2])
-     
-  if ~isnan(on_off_index(channelnumber))
-      if on_off_index(channelnumber)>0.3%Criteria from 'Causal evidence for retina-dependent and -independent visual motion computations in mouse cortex'
-          title([int2str(channelnumber),'ON'])
-      elseif on_off_index(channelnumber)<-0.3
-          title([int2str(channelnumber),'OFF'])
-      elseif on_off_index(channelnumber)>=0
-          title([int2str(channelnumber),'ON-OFF'])
-      elseif on_off_index(channelnumber)<0
-          title([int2str(channelnumber),'OFF-ON'])
-      end
-  end
+    
+    if ~isnan(on_off_index(channelnumber))
+        if on_off_index(channelnumber)>0.3%Criteria from 'Causal evidence for retina-dependent and -independent visual motion computations in mouse cortex'
+            title([int2str(channelnumber),'ON'])
+        elseif on_off_index(channelnumber)<-0.3
+            title([int2str(channelnumber),'OFF'])
+        elseif on_off_index(channelnumber)>=0
+            title([int2str(channelnumber),'ON-OFF'])
+        elseif on_off_index(channelnumber)<0
+            title([int2str(channelnumber),'OFF-ON'])
+        end
+    end
 end
 set(gcf,'units','normalized','outerposition',[0 0 1 1])
 fig = gcf;
@@ -227,8 +229,8 @@ fig.PaperPositionMode = 'auto';
 if save_photo
     saveas(fig,[exp_folder, '\FIG\ONOFF\',sort_directory,'\', name,'.tiff'])
     saveas(fig,[exp_folder, '\FIG\ONOFF\',sort_directory,'\', name,'.fig'])
-    cd([exp_folder, '\FIG\ONOFF\','\',sort_directory])
-    save([exp_folder,'\Analyzed_data\',name,'.mat'],'on_off_index','onBinningSpike','offBinningSpike','onBinningTime','offBinningTime')
+    %cd([exp_folder, '\FIG\ONOFF\','\',sort_directory])
+    save([exp_folder,'\Analyzed_data\',sort_directory,'\',name,'.mat'],'on_off_index','onBinningSpike','offBinningSpike','onBinningTime','offBinningTime')
 end
 
 %% plot single channel PSTH
@@ -237,9 +239,9 @@ end
 % figure(i+60);
 % subplot(3,1,1),plot(onBinningTime,onBinningSpike(i,:));
 % title(['channel ',int2str(i),' ON OFF Respense'])
-% xlabel('On---time(s)'); 
+% xlabel('On---time(s)');
 % subplot(3,1,2),plot(offBinningTime,offBinningSpike(i,:));
-% xlabel('Off---time(s)'); 
+% xlabel('Off---time(s)');
 % subplot(3,1,3),plot(onBinningTime,on_off)
 % ylim([0 2])
 % end

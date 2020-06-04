@@ -2,7 +2,8 @@
 close all;
 clear all;
 code_folder = pwd;
-
+sorted = 0;
+unit = 0;
 exp_folder = 'D:\Leo\0503';
 name = 'Grating';%Directory name
 %name = 'second';%Directory name
@@ -15,45 +16,15 @@ theta = [0,7:-1:0]*0.25*pi;
 %7 is right down 3 is left up
 % 1 is rigtht up 5 is left down
 %Notice it  is direction on monitor
-%% For unsorted spikes
-load('data\0224_Grating.mat')
-analyze_spikes = Spikes;
-sorted = 0;
-%% For sorted spikes
-% load('sort\0718_Grating_300micro_72s_Br50_Q80.mat')
-% unit = 0;
-% complex_channel = [];
-% if unit == 0
-%     fileID = fopen([exp_folder, '\Analyzed_data\unit_a.txt'],'r');
-%     formatSpec = '%c';
-%     txt = textscan(fileID,'%s','delimiter','\n');
-%     for m = 1:size(txt{1}, 1)
-%         complex_channel = [complex_channel str2num(txt{1}{m}(1:2))];
-%     end
-% end
-% for i = 1:60  % i is the channel number
-%     analyze_spikes{i} =[];
-%     if unit == 0
-%         if any(complex_channel == i)
-%             unit_a = str2num(txt{1}{find(complex_channel==i)}(3:end));
-%             for u = unit_a
-%                 analyze_spikes{i} = [analyze_spikes{i} Spikes{u,i}'];
-%             end
-%         else
-%             analyze_spikes{i} = [analyze_spikes{i} Spikes{1,i}'];
-%         end
-%     else
-%         for u = unit
-%             analyze_spikes{i} = [analyze_spikes{i} Spikes{u,i}'];
-%         end
-%     end
-%     analyze_spikes{i} = sort(analyze_spikes{i});
-% end
-% %analyze_spikes = sorted_spikes;
-% sorted = 1;
+if sorted
+    load('sort\0718_Grating_300micro_72s_Br50_Q80.mat')
+    analyze_spikes = get_multi_unit(exp_folder,sorted_spikes,unit);
+else
+    load('data\0224_Grating.mat')
+    analyze_spikes = Spikes;
+end
 
-
-analyze_spikes{31} = [0];
+%analyze_spikes{31} = [0];
 
 trial_num =40;
 num_direction = 8;
