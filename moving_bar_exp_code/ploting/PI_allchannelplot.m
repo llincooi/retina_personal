@@ -7,6 +7,7 @@ close all;
 clear all;
 code_folder = pwd;
 exp_folder = 'D:\Leo\0409';
+exp_folder = 'C:\Users\llinc\GitHub\retina_personal\0229';
 cd(exp_folder)
 sorted =0;
 if sorted

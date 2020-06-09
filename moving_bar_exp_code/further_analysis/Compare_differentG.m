@@ -5,8 +5,8 @@ code_folder = pwd;
 exp_folder = 'D:\Leo\0409';
 exp_folder ='C:\Users\llinc\GitHub\retina_personal\0409';
 cd(exp_folder)
-target_set = '6';
-sorted =1;
+target_set = '1';
+sorted =0;
 cd Analyzed_data
 all_file = dir('*.mat') ; % change the type of the files which you want to select, subdir or dir.
 n_file = length(all_file) ; 
@@ -15,6 +15,7 @@ for i = 1:n_file
         load(all_file(i).name);
     end
 end
+exp_folder ='C:\Users\llinc\GitHub\retina_personal\0409';
 cd ..
 %Load calculated MI first(Need to run Calculate_MI.m first to get)
 if sorted
@@ -144,6 +145,7 @@ for channelnumber = displychannel
         if std(peak_times(:, channelnumber)) > 50 % exclude Odd cell
             channel_anticipation_power(1,channelnumber) = -1; 
         end
+        channel_anticipation_power(2,channelnumber) = mean(peak_times(:, channelnumber)); %delay time
     else % P cell
         f = fit(t_corr_serie',peak_times(:,channelnumber ),'poly1'); %fit a line
         channel_anticipation_power(1,channelnumber) = atan(f.p1/1000); % define the anticipation power to be the angle. (angle> 0) % exclude Odd cell here
