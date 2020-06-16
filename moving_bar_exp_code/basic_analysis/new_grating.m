@@ -2,7 +2,7 @@
 close all;
 clear all;
 code_folder = pwd;
-sorted = 1;
+sorted = 0;
 unit = 0;
 exp_folder = 'C:\Users\hydro_leo\Documents\GitHub\retina_personal\0503';
 file_name = '0224_Grating';
@@ -103,7 +103,7 @@ title('start and end')
 
 
 %% Seperate orientation 
-diode_start = [diode_start./20000. diode_end./20000.];
+diode_start = [diode_start./20000. diode_end./20000.]+4/3;
 trial_length = diff(diode_start)-3;%Minus 1.33 sec for adaptation and minus 1.67 sec for mean luminance interval
 trial_spikes = cell(trial_num,60);
 
@@ -111,7 +111,7 @@ for k = channel_number% k is the channel number
     for j = 1:trial_num
         trial_spikes{j,k} = [];
         for m = 1:length(analyze_spikes{k})
-            if analyze_spikes{k}(m) < diode_start(j)+trial_length(j)-5/3 && analyze_spikes{k}(m) > diode_start(j)+4/3 %Minus first 1.33 sec for adaptation
+            if analyze_spikes{k}(m) < diode_start(j)+trial_length(j) && analyze_spikes{k}(m) > diode_start(j) %Minus first 1.33 sec for adaptation
                 trial_spikes{j,k} = [trial_spikes{j,k}  analyze_spikes{k}(m)-diode_start(j)];
             end
         end
@@ -124,7 +124,7 @@ BinningInterval = 1/fps;  %s
 conter2D= zeros(trial_num/num_direction,num_direction, 60);%It stores sum of total spikes from eight directions
 All_BinningSpike2D = cell(1,trial_num/num_direction);%It stores 8 directions of all trial spikes of varity of width and temporal freguency
 for j = 1:length(display_trial)
-    BinningTime = [4/3 : BinningInterval : round(trial_length(j)*6)/6-5/3];%~binning 'trial_length'
+    BinningTime = [0 : BinningInterval : round(trial_length(j)*6)/6];%~binning 'trial_length'
     %All_BinningSpike2D{ceil(display_trial(j)/num_direction)} = zeros(num_direction,60,length(BinningTime)-1);%It stores 8 directions of all trial spikes
     for k = channel_number % i is the channel number
         [n, ~] = histcounts(trial_spikes{display_trial(j),k},BinningTime) ;
@@ -179,12 +179,12 @@ DScell = DSI(:,:,1)>=0.3;
 sum(DScell, 2)
 
 %% rastplot
-% displaychannel = [];
+% displaychannel = [2 12 21];
 % for i = trial%1:trial_num/num_direction
-%     figure();
+%     figure(900+i);
 %     ha = tight_subplot(num_direction,1,[0 0],[0.05 0.05],[.02 .01]);
 %     for j = 1:num_direction
-%         BinningTime = [BinningInterval/2+4/3 : BinningInterval : round(trial_length((i-1)*8+j)*6)/6-BinningInterval/2-5/3];
+%         BinningTime = [BinningInterval/2 : BinningInterval : round(trial_length((i-1)*8+j)*6)/6-BinningInterval/2];
 %         axes(ha(j)); 
 %         imagesc(BinningTime,displaychannel,reshape(All_BinningSpike2D{i}(j,displaychannel,:),[length(displaychannel),length(BinningTime)]));
 %     end
