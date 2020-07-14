@@ -1,4 +1,4 @@
-function[Spikes,TimeStamps,a_data,Infos] = analyze_MEA_data_OLED(filename,save_data,comment,experimenter,analog_type,r_interval)
+function[Spikes,a_data,Infos] = analyze_MEA_data_OLED(filename,save_data,comment,experimenter,analog_type,r_interval)
 % experimenter is default as the first folder in the directory, if not,
 % please type in manually
 
@@ -82,7 +82,7 @@ end
 
 if save_data==1
     n = [filename(1:end-4),'.mat'];
-    save(n,'Spikes','a_data','Infos', 'stimulus_type')
+    save(n,'Spikes','a_data','Infos')
 end
 end
 

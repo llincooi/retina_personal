@@ -4,7 +4,7 @@ close all;
 delay_correction = 0.0071;
 
 code_folder = pwd;
-exp_folder = 'D:\Leo\0503';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0708';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
 videoworkspace = '\\192.168.0.100\Experiment\Retina\2020Videos\0219v\videoworkspace\';
 cd(exp_folder)
@@ -65,7 +65,7 @@ for m = 1:num_files
     
     pass = 0;
     cd(code_folder)
-    pass = reconstruct(exp_folder,type,name,workspace_name,videoworkspace, delay_correction, 0);
+    pass = reconstruct(exp_folder,type,name,workspace_name,videoworkspace, delay_correction);
     if pass
         disp([name,'  passes'])
     else

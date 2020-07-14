@@ -2,31 +2,27 @@
 % clear all;
 % close all;
 
-function pass = reconstruct(pwd,type,data_name,workspace_name,videoworkspace, delay_correction, OU2OUsmooth)
-%Spikes = cell(1,60);
+function pass = reconstruct(pwd,type,data_name,workspace_name,videoworkspace, delay_correction)
+
 pass = 1;
 data = [pwd,'\data\',data_name,'.mat'];
 
 complete_name =[videoworkspace,workspace_name,'.mat'];
-load(complete_name)
+Video = load(complete_name);
 load(data)
-idealStimuli=newXarray;
+idealStimuli=Video.newXarray;
     
 %%
 lumin=[];
 lumin=a_data(3,:);   %Careful: cant subtract a value to the lumin series, or the correspondent  Spike time would be incorrect!
 plateau_n=200;  %least number of point for plateau
 last_gray = max(lumin)*0.25+min(lumin)*0.75;
-
 thre_up = max(lumin)*0.7+min(lumin)*0.3;
-
 thre_down = max(lumin)*0.2+min(lumin)*0.8;
-
 idealTime = length(idealStimuli)/60;
-plot(lumin)
+figure;plot(lumin)
 % Find when it starts
 for i = 1:length(lumin)
-    
     if (lumin(i+50)-lumin(i))/50 > 10 && (lumin(i+100)-lumin(i))/100 > 6 && (lumin(i+10)-lumin(i))/10 > 7
         diode_start = i;
         break
@@ -36,16 +32,12 @@ end
 % Find when it ends
 is_complete = 0;
 for i = 1:length(lumin)
-    
     if (lumin(i+30)-lumin(i))/30 > 2 && (lumin(i+100)-lumin(i))/100 < 2 && (lumin(i+70)-lumin(i))/70 > 2 && lumin(i+100) < thre_up
         diode_end = i;
         is_complete = 1;
         break
     end
-    
 end
-% diode_end = lumin(end);
-% is_complete = 1;
 if is_complete == 0
     disp('There are no normal signal')
     pass = 0;
@@ -54,8 +46,6 @@ end
 
 
 Samplingrate=20000; %fps of diode in A3
-
-
 TimeStamps=zeros(1,2);
 TimeStamps(1,1)=diode_start/Samplingrate - delay_correction;
 TimeStamps(1,2)=diode_end/Samplingrate- delay_correction;
@@ -356,29 +346,20 @@ if length(find(same_len_pos~=0)) ~=  0
 %     pass = 0;
 %     return
 end
-if strcmp(type,'saccade')    
-    disp('Saccade!!!!!!!!!!');
-    save([pwd,'\merge','\merge_',data_name,'.mat'],'bin_pos','TimeStamps','diode_BT','BinningInterval');
-else
-    reconstruct_spikes=[];
-    for j = 1:length(Spikes)    %running through each channel
-        ss = Spikes{j};
-        ss(ss<TimeStamps(1,1)) = [];  %delete the spikes before TimeStamps(1)
-        ss(ss>TimeStamps(1,2))=[];
-        
-        for i = 1:length(ss)
-            ss(i) = ss(i)-TimeStamps(1,1);
-        end
-        reconstruct_spikes{j} = ss;
-    end
-    if ~OU2OUsmooth
-        save([pwd,'\merge','\merge_',data_name,'.mat'],'bin_pos','TimeStamps','reconstruct_spikes','diode_BT','BinningInterval');
-    else
-        save([pwd,'\merge','\merge_',data_name,'_toOUsmooth.mat'],'bin_pos','TimeStamps','reconstruct_spikes','diode_BT','BinningInterval');
-    end
-
-end
-
-
+reconstruct_spikes=[];
+for j = 1:length(Spikes)    %running through each channel
+    ss = Spikes{j};
+    ss(ss<TimeStamps(1,1)) = [];  %delete the spikes before TimeStamps(1)
+    ss(ss>TimeStamps(1,2))=[];
     
+    for i = 1:length(ss)
+        ss(i) = ss(i)-TimeStamps(1,1);
+    end
+    reconstruct_spikes{j} = ss;
 end
+Video = rmfield(Video,'newXarray');
+if ~exist('Video.type'), Video.type = type; end
+save([pwd,'\merge','\merge_',data_name,'.mat'],'bin_pos','TimeStamps','reconstruct_spikes','diode_BT','BinningInterval','Video');
+
+end
+

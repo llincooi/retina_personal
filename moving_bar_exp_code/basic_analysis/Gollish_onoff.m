@@ -4,7 +4,7 @@ clear all;
 close all;
 load('rr.mat');
 code_folder = pwd;
-exp_folder =  'D:\Leo\0409';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0708';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503'
 save_photo =1;%0 is no save on off photo and data, 1 is save
 cd(exp_folder)
@@ -13,7 +13,7 @@ np_channel = [];%Purple is non-predictive
 %load('predictive_channel\0602_HMM_RL_5G_7min_Br50_Q100_1.mat')
 name = '0224_Gollish_OnOff_movie_5min_Br50_Q100_6.5mW';%Name that used to save photo and data
 Samplingrate=20000; %fps of diode in A3
-sorted = 1;
+sorted = 0;
 %% For sorted spikes
 if sorted
     load(['data\',name,'.mat'])
