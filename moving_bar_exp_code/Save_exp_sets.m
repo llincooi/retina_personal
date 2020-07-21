@@ -1,98 +1,45 @@
 close all;
 clear all;
 %code_folder = pwd;
-exp_folder = 'D:\Leo\0409';
-exp_folder = 'C:\Users\llinc\GitHub\retina_personal\0409';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0719';
 cd(exp_folder)
 mkdir Analyzed_data
 cd Analyzed_data
+Gs_Sets = cell(1,4);
 %% 
-set_number = 1;
-name = '5G_BB_sOU'; %start with Independant variables and then the controlled ones
-filename = '5G_BB_sOU_properties';
-direction = 'RL';
-HMM_former_name = ['0224_OUsmooth_',direction, '_G'];
-HMM_post_name = '_5min_Q100_6.5mW_1Hz';
-OU_former_name = ['0224_OU_', direction, '_G'];
-OU_post_name = '_5min_Q100_6.5mW';
-OU_different_G =  [2.5,4.5,9,12,20];
-HMM_different_G =[2.5,4.5,9,12,20];
-save([num2str(set_number), ';', name, '.mat']);
+Gs_Sets{1} = CompareSet;
+Gs_Sets{1}.Including = ["Dark" "OUsmooth" "UR_DL" "0224"];
+Gs_Sets{1}.Excluding = [];
+Gs_Sets{1}.fig_name = 'Gs_DB_6.5_-100';
+Gs_Sets{1}.file_name = 'Gs_DB_6.5_-100';
 
 %%
-set_number = 2;
-name = '5G_BB_sOU_0.3covered'; %start with Independant variables and then the controlled ones
-filename = '5G_BB_sOU__0.3covered_properties';
-direction = 'RL';
-HMM_former_name = ['0224_OUsmooth_',direction, '_G'];
-HMM_post_name = '_5min_Q100_6.5mW_1Hz_0.3covered';
-OU_former_name = ['0224_OU_', direction, '_G'];
-OU_post_name = '_5min_Q100_6.5mW';
-OU_different_G =  [2.5,4.5,9,12,20];
-HMM_different_G = [2.5,4.5,9,12,20];
-save([num2str(set_number), ';', name, '.mat']);
+Gs_Sets{2} = CompareSet;
+Gs_Sets{2}.Including = ["OUsmooth" "UR_DL" "100" "0609"];
+Gs_Sets{2}.Excluding = ["Bright" "Dark"];
+Gs_Sets{2}.fig_name = 'Gs_BB_6.5_+100';
+Gs_Sets{2}.file_name = 'Gs_BB_6.5_+100';
 %%
-set_number = 3;
-name = '5G_BB_sOU_0.15covered'; %start with Independant variables and then the controlled ones
-filename = '5G_BB_sOU__0.15covered_properties';
-direction = 'RL';
-HMM_former_name = ['0224_OUsmooth_',direction, '_G'];
-HMM_post_name = '_5min_Q100_6.5mW_1Hz_0.15covered';
-OU_former_name = ['0224_OU_', direction, '_G'];
-OU_post_name = '_5min_Q100_6.5mW';
-OU_different_G =  [2.5,4.5,9,12,20];
-HMM_different_G = [2.5,4.5,9,12,20];
-save([num2str(set_number), ';', name, '.mat']);
+Gs_Sets{3} = CompareSet;
+Gs_Sets{3}.Including = ["OUsmooth" "UR_DL" "Bright" "right" "0609"];
+Gs_Sets{3}.Excluding = ["left"];
+Gs_Sets{3}.fig_name = 'Gs_BB_6.5_right';
+Gs_Sets{3}.file_name = 'Gs_BB_6.5_right';
 
 %%
-set_number = 4;
-name = '5G_BB_HMM'; %start with Independant variables and then the controlled ones
-filename = '5G_BB_HMM_properties';
-direction = 'RL';
-HMM_former_name = ['0224_HMM_',direction, '_G'];
-HMM_post_name = '_5min_Q100_6.5mW';
-OU_former_name = ['0224_OU_', direction, '_G'];
-OU_post_name = '_5min_Q100_6.5mW';
-OU_different_G =  [2.5,4.5,9,12,20];
-HMM_different_G = [2.5,4.5,9,12,20];
-save([num2str(set_number), ';', name, '.mat']);
-%%
-set_number = 6;
-name = '5G_BB_OU';%start with Independant variables and then the controlled ones
-filename = '5G_BB_OU_properties'
-direction = 'RL';
-HMM_former_name = ['0224_OU_',direction, '_G'];
-HMM_post_name = '_5min_Q100_6.5mW';
-OU_former_name = ['0224_OU_', direction, '_G'];
-OU_post_name = '_5min_Q100_6.5mW';
-OU_different_G =  [2.5,4.5,9,12,20];
-HMM_different_G = [2.5,4.5,9,12,20];
-save([num2str(set_number), ';', name, '.mat']);
+Gs_Sets{4} = CompareSet;
+Gs_Sets{4}.Including = ["OUsmooth" "UR_DL" "Bright" "left" "0609"];
+Gs_Sets{4}.Excluding = [];
+Gs_Sets{4}.fig_name = 'Gs_BB_6.5_left';
+Gs_Sets{4}.file_name = 'Gs_BB_6.5_left';
 
 %%
-% set_number = 6;
-% name = '5G_BB_sOU_0.03interupted'; %start with Independant variables and then the controlled ones
-% filename = '5G_BB_sOU__0.03interupted_properties';
-% direction = 'RL';
-% HMM_former_name = ['0224_OUsmooth_',direction, '_G'];
-% HMM_post_name = '_5min_Q100_6.5mW_1Hz_0.03interrupt';
-% OU_former_name = ['0224_OU_', direction, '_G'];
-% OU_post_name = '_5min_Q100_6.5mW';
-% OU_different_G =  [2.5,9];
-% HMM_different_G = [2.5,4.5,9,12,20];
-% save([num2str(set_number), ';', name, '.mat']);
+Gs_Sets{5} = CompareSet;
+Gs_Sets{5}.Including = ["OUsmooth" "UR_DL" "0224"];
+Gs_Sets{5}.Excluding = ["Dark"];
+Gs_Sets{5}.fig_name = 'Gs_BB_6.5';
+Gs_Sets{5}.file_name = 'Gs_BB_6.5';
 
- %%
-% set_number = 7;
-% name = '5G_BB_sOU_0.09interupted'; %start with Independant variables and then the controlled ones
-% filename = '5G_BB_sOU__0.09interupted_properties';
-% direction = 'RL';
-% HMM_former_name = ['0224_OUsmooth_',direction, '_G'];
-% HMM_post_name = '_5min_Q100_6.5mW_1Hz_0.09interrupt';
-% OU_former_name = ['0224_OU_', direction, '_G'];
-% OU_post_name = '_5min_Q100_6.5mW';
-% OU_different_G =  [2.5,9];
-% HMM_different_G = [2.5,4.5,9,12,20];
-% save([num2str(set_number), ';', name, '.mat']);
+%%
+save('Gs_Sets.mat', 'Gs_Sets')
 
-%% 

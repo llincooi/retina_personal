@@ -4,7 +4,7 @@ clear all;
 close all;
 load('rr.mat');
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0708';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0719';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503'
 save_photo =1;%0 is no save on off photo and data, 1 is save
 cd(exp_folder)
@@ -232,7 +232,7 @@ if save_photo
     %cd([exp_folder, '\FIG\ONOFF\','\',sort_directory])
     save([exp_folder,'\Analyzed_data\',sort_directory,'\',name,'.mat'],'on_off_index','onBinningSpike','offBinningSpike','onBinningTime','offBinningTime')
 end
-
+cd(code_folder)
 %% plot single channel PSTH
 % channelnumber=[10];
 % for i = channelnumber

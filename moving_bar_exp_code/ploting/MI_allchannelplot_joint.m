@@ -6,7 +6,7 @@
 close all;
 clear all;
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0708';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0719';
 cd(exp_folder)
 sorted = 0;
 if sorted
@@ -70,5 +70,5 @@ for z =1:n_file
     close(fig)
     %saveas(fig,['FIG\three_mix',name,'.fig'])
 end
-
+cd(code_folder)
 

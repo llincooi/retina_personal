@@ -11,7 +11,7 @@ sorted = 0;
 unit = 0;
 
 name = '30Hz_27_RF_15min';%Directory name
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0708';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0719';
 cd(exp_folder)
 if ~sorted
     load('merge\merge_0224_Checkerboard_30Hz_27_15min_Br50_Q100.mat')

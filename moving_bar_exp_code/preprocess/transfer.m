@@ -1,12 +1,12 @@
 %cd('0704');
 clear all
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0708';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0719';
 cd(exp_folder)
 cd data
 all_file = dir('*.mcd') ; % change the type of the files which you want to select, subdir or dir.
 n_file = length(all_file) ; 
-for m = 40%1: n_file
+for m = 1: n_file
     clearvars -except all_file n_file m code_folder exp_folder
     file = all_file(m).name ;
     [pathstr, name, ext] = fileparts(file);

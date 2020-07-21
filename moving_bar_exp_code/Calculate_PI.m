@@ -1,7 +1,7 @@
 clear all;
 code_folder = pwd;
 %exp_folder = 'D:\Leo\1012exp';
-exp_folder_cell = {'D:\GoogleDrive\retina\Exps\2020\0708', 'C:\Users\llinc\GitHub\retina_personal\0409' ,'D:\Leo\0503'};
+exp_folder_cell = {'D:\GoogleDrive\retina\Exps\2020\0719', 'C:\Users\llinc\GitHub\retina_personal\0409' ,'D:\Leo\0503'};
 for eee = 1
     exp_folder = exp_folder_cell{eee};
     cd(exp_folder);

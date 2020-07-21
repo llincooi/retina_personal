@@ -1,9 +1,7 @@
 close all;
 clear all;
 code_folder = pwd;
-%exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
-exp_folder = 'D:\Leo\0409';
-exp_folder ='C:\Users\llinc\GitHub\retina_personal\0409';
+exp_folder ='D:\GoogleDrive\retina\Exps\2020\0708';
 cd(exp_folder)
 target_set = '1';
 sorted =0;
@@ -15,7 +13,7 @@ for i = 1:n_file
         load(all_file(i).name);
     end
 end
-exp_folder ='C:\Users\llinc\GitHub\retina_personal\0409';
+exp_folder ='D:\GoogleDrive\retina\Exps\2020\0708';
 cd ..
 %Load calculated MI first(Need to run Calculate_MI.m first to get)
 if sorted

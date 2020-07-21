@@ -3,7 +3,7 @@ close all;
 clear all;
 %% Setting
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0708';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0719';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503'
 load('rr.mat')
 cd(exp_folder);

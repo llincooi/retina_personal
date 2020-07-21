@@ -84,7 +84,6 @@ for z =1:n_file %choose file
             dis_STA(i,:) = dis_STA(i,:)/sum_n(i);
         end
     end
-    
     save([exp_folder,'\STA\',name(17:end),'.mat'],'time','dis_STA')
 end
 
