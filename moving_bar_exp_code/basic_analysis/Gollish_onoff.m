@@ -4,7 +4,7 @@ clear all;
 close all;
 load('rr.mat');
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0719';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503'
 save_photo =1;%0 is no save on off photo and data, 1 is save
 cd(exp_folder)

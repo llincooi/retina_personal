@@ -1,7 +1,7 @@
 close all;
 clear all;
 code_folder = pwd;
-exp_folder ='D:\GoogleDrive\retina\Exps\2020\0719';
+exp_folder ='D:\GoogleDrive\retina\Exps\2020\0729';
 sorted =0;
 cd(exp_folder)
 load('Analyzed_data\Gs_Sets')

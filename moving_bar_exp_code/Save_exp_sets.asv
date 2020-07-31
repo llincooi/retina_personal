@@ -8,15 +8,15 @@ cd Analyzed_data
 Gs_Sets = cell(1,4);
 %% 
 Gs_Sets{1} = CompareSet;
-Gs_Sets{1}.Including = [ "OUsmooth" "UL_DR" "0727" "Bright"];
+Gs_Sets{1}.Including = [ "OUsmooth" "UL_DR" "0224"];
 Gs_Sets{1}.Excluding = ["re"];
 Gs_Sets{1}.fig_name = 'Gs_DB_6.5';
 Gs_Sets{1}.file_name = 'Gs_DB_6.5';
 
 %%
 Gs_Sets{2} = CompareSet;
-Gs_Sets{2}.Including = ["OUsmooth" "UL_DR" "re" "0727" "Bright"];
-Gs_Sets{2}.Excluding = [];
+Gs_Sets{2}.Including = ["OUsmooth" "UL_DR" "100" "0609"];
+Gs_Sets{2}.Excluding = ["Bright" "Dark"];
 Gs_Sets{2}.fig_name = 'Gs_BB_6.5_re';
 Gs_Sets{2}.file_name = 'Gs_BB_6.5_re';
 % %%

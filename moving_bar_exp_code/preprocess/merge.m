@@ -4,7 +4,7 @@ close all;
 delay_correction = 0.0071;
 
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0719';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
 videoworkspace = '\\192.168.0.100\Experiment\Retina\2020Videos\0219v\videoworkspace\';
 cd(exp_folder)

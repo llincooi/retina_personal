@@ -6,7 +6,7 @@
 close all;
 clear all;
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0719';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
 cd(exp_folder)
 sorted =0;
 if sorted

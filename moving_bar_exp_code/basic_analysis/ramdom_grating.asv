@@ -7,8 +7,8 @@ unit = 0;
 videoworkspace = '\\192.168.0.100\Experiment\Retina\2020Videos\0219v\videoworkspace\';
 exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
 file_name = '0618_Grating_0-6.5mW_re';
-workspacename = '0618_Grating_0-6.5mW';
-Vedio = load([videoworkspace, workspacename, '.mat'])
+workspacename = '0618_Grating_0-6.5mW_re';
+Vedio = load([videoworkspace, file_name, '.mat'])
 save_photo = 0;%0 is no save grating photo, 1 is save
 displaychannel = [1:60];%Choose which channel to display
 cd(exp_folder)

@@ -1,7 +1,7 @@
 %cd('0704');
 clear all
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0719';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
 cd(exp_folder)
 cd data
 all_file = dir('*.mcd') ; % change the type of the files which you want to select, subdir or dir.

@@ -1,7 +1,7 @@
 clear all;
 code_folder = pwd;
 %exp_folder = 'D:\Leo\1012exp';
-exp_folder_cell = {'D:\GoogleDrive\retina\Exps\2020\0719', 'C:\Users\llinc\GitHub\retina_personal\0409' ,'D:\Leo\0503'};
+exp_folder_cell = {'D:\GoogleDrive\retina\Exps\2020\0729', 'C:\Users\llinc\GitHub\retina_personal\0409' ,'D:\Leo\0503'};
 for eee = 1
     exp_folder = exp_folder_cell{eee};
     cd(exp_folder);
@@ -29,7 +29,7 @@ for eee = 1
         end
     end
     cd(code_folder);
-    for z =2:n_file;%1:n_file %choose file
+    for z =1:n_file;%1:n_file %choose file
         pos_Mutual_infos= cell(1,60);
         v_Mutual_infos= cell(1,60);
         joint_Mutual_infos= cell(1,60);
@@ -40,8 +40,7 @@ for eee = 1
         directory = [pathstr,'\'];
         filename = [name,ext];
         load([directory,filename]);
-        if ~isfield(Video, 'series_type')
-            continue;
+        if ~isfield(Video, 'series_type'),      continue;
         elseif strcmp(Video.series_type,'HMM') || strcmp(Video.series_type,'OU') || strcmp(Video.series_type,'OUsmooth')
             %find two peak when it's wf
             if strcmp(Video.stimulation_type,'WF')
