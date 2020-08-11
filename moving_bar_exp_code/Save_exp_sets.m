@@ -5,20 +5,20 @@ exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
 cd(exp_folder)
 mkdir Analyzed_data
 cd Analyzed_data
-Gs_Sets = cell(1,4);
+Fc_Sets = cell(1,2);
 %% 
-Gs_Sets{1} = CompareSet;
-Gs_Sets{1}.Including = [ "OUsmooth" "UL_DR" "0727" "Bright"];
-Gs_Sets{1}.Excluding = ["re"];
-Gs_Sets{1}.fig_name = 'Gs_DB_6.5';
-Gs_Sets{1}.file_name = 'Gs_DB_6.5';
+Fc_Sets{1} = CompareSet;
+Fc_Sets{1}.Including = [ "OUsmooth" "UL_DR" "0727" "Bright"];
+Fc_Sets{1}.Excluding = ["re"];
+Fc_Sets{1}.fig_name = 'Fc_DB_6.5';
+Fc_Sets{1}.file_name = 'Fc_DB_6.5';
 
 %%
-Gs_Sets{2} = CompareSet;
-Gs_Sets{2}.Including = ["OUsmooth" "UL_DR" "re" "0727" "Bright"];
-Gs_Sets{2}.Excluding = [];
-Gs_Sets{2}.fig_name = 'Gs_BB_6.5_re';
-Gs_Sets{2}.file_name = 'Gs_BB_6.5_re';
+Fc_Sets{2} = CompareSet;
+Fc_Sets{2}.Including = ["OUsmooth" "UL_DR" "re" "0727" "Bright"];
+Fc_Sets{2}.Excluding = [];
+Fc_Sets{2}.fig_name = 'Fc_BB_6.5_re';
+Fc_Sets{2}.file_name = 'Fc_BB_6.5_re';
 % %%
 % Gs_Sets{3} = CompareSet;
 % Gs_Sets{3}.Including = ["OUsmooth" "UR_DL" "Bright" "right" "0609"];
@@ -41,5 +41,5 @@ Gs_Sets{2}.file_name = 'Gs_BB_6.5_re';
 % Gs_Sets{5}.file_name = 'Gs_BB_6.5';
 
 %%
-save('Gs_Sets.mat', 'Gs_Sets')
+save('Fc_Sets.mat', 'Fc_Sets')
 
