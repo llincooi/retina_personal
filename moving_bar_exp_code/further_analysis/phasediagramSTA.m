@@ -1,10 +1,10 @@
 close all;
 clear all;
 code_folder = pwd;
-exp_folder = 'D:\Leo\0229';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
 sorted = 0;
 unit = 0;
-displaychannel =[18 48];
+displaychannel =[52];
 forward = 10;%90 bins before spikes for calculating STA%1500ms
 backward = 15;%90 bins after spikes for calculating STA
 frame_to_save = [10 17]; %-100ms &16.7ms
@@ -25,7 +25,7 @@ end
 all_file = subdir('*.mat') ; % change the type of the files which you want to select, subdir or dir.
 n_file = length(all_file) ;
 
-for z =19:23%:n_file %choose file
+for z =1:n_file %choose file
     
     file = all_file(z).name ;
     [pathstr, name, ext] = fileparts(file);
