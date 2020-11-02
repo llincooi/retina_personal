@@ -2,43 +2,36 @@ clear all
 close all
 % load('D:\GoogleDrive\retina\Exps\2020\0503\merge\merge_0224_OUsmooth_RL_G4.5_5min_Q100_6.5mW_1Hz_re.mat')
 for Fc = [2]
-load(['D:\GoogleDrive\retina\PCA\OUsmooth_Bright_UL_DR_G4.5_5min_Q100_6.5mW_',num2str(Fc),'Hz.mat'])
-load(['D:\GoogleDrive\retina\Exps\2020\0729\merge\merge_0727_OUsmooth_Bright_UL_DR_G4.5_5min_Q100_6.5mW_',num2str(Fc),'Hz.mat'])
-load(['D:\GoogleDrive\retina\Exps\2020\0729\MI\unsort\0727_OUsmooth_Bright_UL_DR_G4.5_5min_Q100_6.5mW_',num2str(Fc),'Hz.mat'])
-
 load(['D:\GoogleDrive\retina\Chou''s data\20200408\20200408_OU_cutoff=',num2str(Fc),'_sort_unit2.mat'])
-dt = 0.01
-sampling_rate = 20000
-
-
-MI_time = time;
+dt = 0.01;
+sampling_rate = 20000;
 % put your stimulus here!!
-TheStimuli = zeros(2, length(bin_pos));
-TheStimuli(1,:)=bin_pos;
+TheStimuli = zeros(2, ceil((TimeStamps(2)-TimeStamps(1))/dt));
+TheStimuli(1,:) = a_data(1,TimeStamps(1)*sampling_rate:sampling_rate*dt:TimeStamps(2)*sampling_rate);
 TheStimuli(2,:) = finite_diff(TheStimuli(1,:) ,4);
 TheStimuli(1,:) = (TheStimuli(1,:) - mean(TheStimuli(1,:)))/std(TheStimuli(1,:));
 TheStimuli(2,:) = (TheStimuli(2,:) - mean(TheStimuli(2,:)))/std(TheStimuli(2,:));
-Rotate = [cos(pi/4), -sin(pi/4);cos(pi/4), sin(pi/4)];
-TheStimuli = Rotate*TheStimuli;
+% Rotate = [cos(pi/4), -sin(pi/4);cos(pi/4), sin(pi/4)];
+% TheStimuli = Rotate*TheStimuli;
+BinningInterval = dt
 forward = -1;
 backward = 1;
 forward = round(forward/BinningInterval);
 backward = round(backward/BinningInterval);
 time=[forward:backward]*BinningInterval;
 % Binning
-bin=BinningInterval*10^3; %ms
-BinningTime =diode_BT;
+bin = BinningInterval*10^3; %ms
+BinningTime = 0:dt:TimeStamps(2)-TimeStamps(1);
 
 %% BinningSpike and calculate STA
 BinningSpike = zeros(60,length(BinningTime));
-analyze_spikes = cell(1,60);
-analyze_spikes = reconstruct_spikes;
+analyze_spikes = Spikes;
 
 
 sum_n = zeros(1,60);
 dis_STA = zeros(60,backward-forward+1);
 dis_dSTA = zeros(60,backward-forward+1);
-channelnumber = 21;
+channelnumber = 53;
 for i = channelnumber%:60  % i is the channel number
 %     [n,~] = hist(analyze_spikes{i}(idxs{i}==2),BinningTime) ;
     [n,~] = hist(analyze_spikes{i},BinningTime) ;
@@ -52,27 +45,19 @@ for i = channelnumber%:60  % i is the channel number
         dis_STA(i,:) = dis_STA(i,:)/sum_n(i);
         dis_dSTA(i,:) = dis_dSTA(i,:)/sum_n(i);
     end
-    Syn = smooth(joint_Mutual_infos{i}-pos_Mutual_infos{i}-v_Mutual_infos{i}+Redun_Mutual_infos{i},5);
-    Syn = smooth(Redun_Mutual_infos{i},5);
-%     Syn = smooth(joint_Mutual_infos{i},5);
-    Pos = smooth(pos_Mutual_infos{i},5);
-    V = smooth(v_Mutual_infos{i},5);
-    Syn_peaktime = MI_time(find(Syn==max(Syn)))*10^-3;
-    Pos_peaktime = MI_time(find(Pos==max(Pos)))*10^-3;
-    V_peaktime = MI_time(find(V==max(V)))*10^-3;
+%     Syn = smooth(joint_Mutual_infos{i}-pos_Mutual_infos{i}-v_Mutual_infos{i}+Redun_Mutual_infos{i},5);
+%     Syn = smooth(Redun_Mutual_infos{i},5);
+% %     Syn = smooth(joint_Mutual_infos{i},5);
+%     Pos = smooth(pos_Mutual_infos{i},5);
+%     V = smooth(v_Mutual_infos{i},5);
+%     Syn_peaktime = MI_time(find(Syn==max(Syn)))*10^-3;
+%     Pos_peaktime = MI_time(find(Pos==max(Pos)))*10^-3;
+%     V_peaktime = MI_time(find(V==max(V)))*10^-3;
 end
-figure(101); hold on;
-plot(MI_time,Syn)
-plot(MI_time,V)
-plot(MI_time,Pos)
-grid on;
-xlim([-1000,1000])
 figure(100)
 plot3(dis_STA(channelnumber,:),dis_dSTA(channelnumber,:),time);grid on; hold on;
 scatter3(dis_STA(channelnumber,[31 61 91]), dis_dSTA(channelnumber,[31 61 91]) ,time([31 61 91]));
-Syn_peakpos = interp1(time,dis_STA(channelnumber,:),Syn_peaktime);
-Syn_peakv = interp1(time,dis_dSTA(channelnumber,:),Syn_peaktime);
-scatter3(Syn_peakpos, Syn_peakv, Syn_peaktime)
+
 
 % xcenter = (max(dis_STA(channelnumber,:))+min(dis_STA(channelnumber,:)))/2;
 % vcenter = 0;
@@ -84,7 +69,7 @@ end
 
 
 sum_n = zeros(1,60);
-peaktimes = [V_peaktime Syn_peaktime Pos_peaktime, MI_time(1)*10^-3, MI_time(end)*10^-3, -0.0333, 0.1];
+peaktimes = [-0.2 -0.18 Pos_peaktime, MI_time(1)*10^-3, MI_time(end)*10^-3, -0.0333, 0.1];
 peaktimes_names = ["VPeakTime", "JointPeakTime", "PosPeakTime", "ends", "end", "2ndJointPeakTime", "JointConcaveTime"];
 numfig = length(peaktimes)
 phase_STD = cell(numfig,60); %spike-trigger-distribuion

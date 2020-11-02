@@ -1,7 +1,7 @@
 clear all
 close all
 % load('D:\GoogleDrive\retina\Exps\2020\0503\merge\merge_0224_OUsmooth_RL_G4.5_5min_Q100_6.5mW_1Hz_re.mat')
-for Fc = [2]
+for Fc = [8]
 load(['D:\GoogleDrive\retina\PCA\OUsmooth_Bright_UL_DR_G4.5_5min_Q100_6.5mW_',num2str(Fc),'Hz.mat'])
 load(['D:\GoogleDrive\retina\Exps\2020\0729\merge\merge_0727_OUsmooth_Bright_UL_DR_G4.5_5min_Q100_6.5mW_',num2str(Fc),'Hz.mat'])
 load(['D:\GoogleDrive\retina\Exps\2020\0729\MI\unsort\0727_OUsmooth_Bright_UL_DR_G4.5_5min_Q100_6.5mW_',num2str(Fc),'Hz.mat'])
@@ -9,8 +9,9 @@ MI_time = time;
 % put your stimulus here!!
 TheStimuli = zeros(2, length(bin_pos));
 TheStimuli(1,:)=bin_pos;
-TheStimuli(1,:) = (TheStimuli(1,:) - mean(TheStimuli(1,:)))/std(TheStimuli(1,:));
 TheStimuli(2,:) = finite_diff(TheStimuli(1,:) ,4);
+Rotate = [cos(pi/4), ];[]
+TheStimuli(1,:) = (TheStimuli(1,:) - mean(TheStimuli(1,:)))/std(TheStimuli(1,:));
 TheStimuli(2,:) = (TheStimuli(2,:) - mean(TheStimuli(2,:)))/std(TheStimuli(2,:));
 forward = -1;
 backward = 1;
@@ -32,8 +33,8 @@ dis_STA = zeros(60,backward-forward+1);
 dis_dSTA = zeros(60,backward-forward+1);
 channelnumber = 21;
 for i = channelnumber%:60  % i is the channel number
-    [n,~] = hist(analyze_spikes{i}(idxs{i}==2),BinningTime) ;
-%     [n,~] = hist(analyze_spikes{i},BinningTime) ;
+%     [n,~] = hist(analyze_spikes{i}(idxs{i}==2),BinningTime) ;
+    [n,~] = hist(analyze_spikes{i},BinningTime) ;
     BinningSpike(i,:) = n;
     sum_n(i) = sum(BinningSpike(i,1-forward:end-backward));
     for time_shift = 1-forward:length(BinningTime)-backward
@@ -44,8 +45,9 @@ for i = channelnumber%:60  % i is the channel number
         dis_STA(i,:) = dis_STA(i,:)/sum_n(i);
         dis_dSTA(i,:) = dis_dSTA(i,:)/sum_n(i);
     end
-    Syn = smooth(joint_Mutual_infos{i}-pos_Mutual_infos{i}-v_Mutual_infos{i}+Redun_Mutual_infos{i},10);
-    Syn = smooth(joint_Mutual_infos{i},5);
+    Syn = smooth(joint_Mutual_infos{i}-pos_Mutual_infos{i}-v_Mutual_infos{i}+Redun_Mutual_infos{i},5);
+    Syn = smooth(Redun_Mutual_infos{i},5);
+%     Syn = smooth(joint_Mutual_infos{i},5);
     Pos = smooth(pos_Mutual_infos{i},5);
     V = smooth(v_Mutual_infos{i},5);
     Syn_peaktime = MI_time(find(Syn==max(Syn)))*10^-3;
@@ -79,18 +81,20 @@ TheStimuli(1,:) = (TheStimuli(1,:) - mean(TheStimuli(1,:)))/std(TheStimuli(1,:))
 TheStimuli(2,:) = finite_diff(TheStimuli(1,:) ,4);
 TheStimuli(2,:) = (TheStimuli(2,:) - mean(TheStimuli(2,:)))/std(TheStimuli(2,:));
 sum_n = zeros(1,60);
-peaktimes = [V_peaktime Syn_peaktime Pos_peaktime, MI_time(1)*10^-3, MI_time(end)*10^-3, 0.1667, 0.1];
+peaktimes = [V_peaktime Syn_peaktime Pos_peaktime, MI_time(1)*10^-3, MI_time(end)*10^-3, -0.0333, 0.1];
 peaktimes_names = ["VPeakTime", "JointPeakTime", "PosPeakTime", "ends", "end", "2ndJointPeakTime", "JointConcaveTime"];
 numfig = length(peaktimes)
 phase_STD = cell(numfig,60); %spike-trigger-distribuion
 num_shift = BinningInterval;
 
 for k = channelnumber
-    analyze_spikes{k}(analyze_spikes{k}<1) = []; %remove all feild on effect
-    if length(analyze_spikes{k})/ (length(TheStimuli)*BinningInterval) >1
+%     TheSpikes = analyze_spikes{k}(idxs{k}==1)
+    TheSpikes = analyze_spikes{k}
+    TheSpikes(TheSpikes<1) = []; %remove all feild on effect
+    if length(TheSpikes)/ (length(TheStimuli)*BinningInterval) >1
         for i =  1:numfig %for -250ms:250ms
-            for j = 1:length(analyze_spikes{k})
-                spike_time = analyze_spikes{k}(j); %s
+            for j = 1:length(TheSpikes)
+                spike_time = TheSpikes(j); %s
                 RF_frame = floor((spike_time + peaktimes(i))*60);
                 if RF_frame > 0 && RF_frame < length(TheStimuli)
                     phace_pt = TheStimuli(: , RF_frame);
