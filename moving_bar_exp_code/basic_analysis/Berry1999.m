@@ -5,9 +5,9 @@ clear all;
 %load('D:\Leo\0712exp\sort_merge_spike\sort_merge_0502Dark_Reversal_moving_UR_DL_201.6s_Br50_Q100.mat')
 %load('D:\Leo\0712exp\sort_merge_spike\sort_merge_0415_Reversal_moving_UR_DL_201.6s_Br50_Q100.mat')
 %load('D:\Leo\0712exp\sort_merge_spike\sort_merge_0711_Reversal_moving_UR_DL_252s_Br50_Q100.mat')
-load('D:\Leo\0620exp\sort_merge_spike\sort_merge_0415_Reversal_moving_RL_201.6s_Br50_Q100_re.mat')
+load('D:\GoogleDrive\retina\Exps\2019\0620exp\sort_merge_spike\sort_merge_0415_Reversal_moving_RL_201.6s_Br50_Q100_re.mat')
 
-load('D:\Leo\0620exp\data\RFcenter.mat')
+load('D:\GoogleDrive\retina\Exps\2019\0620exp\data\RFcenter.mat')
 load('boundary_set.mat')
 load('channel_pos.mat')
 trial_num = 12;

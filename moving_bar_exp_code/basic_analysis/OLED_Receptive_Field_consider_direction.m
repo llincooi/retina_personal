@@ -9,6 +9,7 @@ save_photo =1;%0 is no save RF photo, 1 is save
 save_svd =1;%0 is no save svd photo, 1 is save
 sorted = 0;
 unit = 0;
+direction = 'UL_DR';
 
 name = '30Hz_27_RF_15min';%Directory name
 exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
@@ -247,6 +248,7 @@ end
 for k = displaychannel
     RF_properties(k,2) = (RF_properties(k,2) - (side_length+1)/2)/(side_length/mea_size_bm)+meaCenter_x;
     RF_properties(k,4) = (RF_properties(k,4) - (side_length+1)/2)/(side_length/mea_size_bm)+meaCenter_y;
+    Monitor2DCoor2BarCoor(RF_properties(k,2),RF_properties(k,4), direction,'OLED')
 end
 RF_pixel_size = mea_size_bm/side_length*micro_per_pixel %mircometer
 RF_properties(:,[3 5]) =  1.5*RF_properties(:,[3 5])*RF_pixel_size; %%mm %%1.5*sdv accroding to Gollisch
