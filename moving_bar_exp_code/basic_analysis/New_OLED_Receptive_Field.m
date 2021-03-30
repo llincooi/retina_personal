@@ -219,8 +219,11 @@ for k = displaychannel
     
     xaxis = linspace(1,length(diag(iSK,offset)),1000);
     bar = zeros(1,1000);
-    interp1(xaxis, 1:1000, find(diag(space,offset) == max(diag(space,offset))));
-    (bar_wid*2+1)/mea_size_bm*side_length;
+    bc = interp1(xaxis, 1:1000, find(diag(space,offset) == max(diag(space,offset))), 'nearest');
+    hw = round((bar_wid*2+1)/mea_size_bm*side_length/sqrt(2)/length(diag(iSK,offset))*1000/2);
+    bar(bc-hw:bc+hw) = max(diag(space,offset));
+    plot(xaxis,bar);
+    
     figure(400+k);
     imagesc(iSK);hold on;
     pbaspect([1 1 1])

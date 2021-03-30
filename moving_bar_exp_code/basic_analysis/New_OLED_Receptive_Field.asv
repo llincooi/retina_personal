@@ -206,7 +206,7 @@ for k = displaychannel
    
     
 end
-%%
+%% Only for direction = 'UL_DR'
 for k = displaychannel
     offset = round(RF_properties(k).X_Coor)-round(RF_properties(k).Y_Coor);
     iSK = 0;
@@ -216,7 +216,12 @@ for k = displaychannel
     figure(300+k);hold on;
     plot(diag(iSK,offset))
     plot(diag(space,offset))
-    (bar_wid*2+1)/mea_size_bm*side_length
+    
+    xaxis = linspace(1,length(diag(iSK,offset)),1000);
+    bar = zeros(1,1000);
+    bc = interp1(xaxis, 1:1000, find(diag(space,offset) == max(diag(space,offset))), 'nearest');
+    bar(bc-:bc+)
+    (bar_wid*2+1)/mea_size_bm*side_length;
     figure(400+k);
     imagesc(iSK);hold on;
     pbaspect([1 1 1])
