@@ -6,7 +6,7 @@ load('rr.mat');
 code_folder = pwd;
 exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503'
-save_photo =1;%0 is no save on off photo and data, 1 is save
+save_photo =0;%0 is no save on off photo and data, 1 is save
 cd(exp_folder)
 p_channel = [];%Green is predictive
 np_channel = [];%Purple is non-predictive
@@ -99,7 +99,7 @@ subplot(2,1,1),imagesc([BinningInterval : BinningInterval : 16],[1:60],BinningSp
 subplot(2,1,2),plot(sti);
 
 %%  each channels 
-close all
+% close all
 for i = 1:size(SSpikes,2)
     if sum(BinningSpike(i,:))/16 <= 7 || i == 4 %firing rate > 3Hz
         continue
@@ -108,3 +108,21 @@ for i = 1:size(SSpikes,2)
     plot(BinningSpike(i,:)); hold on;
     plot(sti*max(sum(BinningSpike(i,:), 1)));
 end
+
+%%
+sumSpike = sum(BinningSpike, 1);
+sumsumSpike = zeros(1,length(brightness_series)-1);
+maxsumSpike = zeros(1,length(brightness_series)-1);
+for i = 1:length(brightness_series)-1
+    sumsumSpike(i) = sum(sumSpike((length(BinningTime)-1)*(i-1)+1:(length(BinningTime)-1)*(i-1)+(length(BinningTime)-1)));
+    maxsumSpike(i) = max(sumSpike((length(BinningTime)-1)*(i-1)+1:(length(BinningTime)-1)*(i-1)+(length(BinningTime)-1)));
+end
+lumdiff = diff([brightness_series(end), brightness_series(1:end-1)]);
+%%
+figure;
+% plot(sumsumSpike(2:2:end)/sumsumSpike(2)); hold on;
+% plot(sumsumSpike(1:2:end)/sumsumSpike(1)); hold on;
+plot(maxsumSpike(2:2:end)/maxsumSpike(2) ); hold on;
+plot(maxsumSpike(1:2:end)/maxsumSpike(1) );
+% plot(lumdiff(2:2:end)/lumdiff(2));
+% plot(brightness_series(2:2:end)/brightness_series(end));
