@@ -40,17 +40,7 @@ for eee = 1
         directory = [pathstr,'\'];
         filename = [name,ext];
         load([directory,filename]);
-        if ~isfield(Video, 'series_type'),      continue;
-        elseif strcmp(Video.series_type,'HMM') || strcmp(Video.series_type,'OU') || strcmp(Video.series_type,'OUsmooth')
-            %find two peak when it's wf
-            if strcmp(Video.stimulation_type,'WF')
-                num_peak = 2;
-            else
-                num_peak = 1;
-            end
-        else
-            continue;
-        end
+        
         
         
         z
@@ -101,58 +91,17 @@ for eee = 1
             joint_Mutual_infos{channelnumber} = MIxv;
             Redun_Mutual_infos{channelnumber} = Redundancy;
             
-            %% find peaks and width
-            baseline = min(Redundancy);
-            smooth_mutual_information = smooth(MIx);
-            MIdiff = diff(smooth_mutual_information);
-            ind_local_extrema = find(MIdiff(1:end-1).*MIdiff(2:end) < 0)+1; %find all local extrema
-            if isempty(ind_local_extrema)
-                MI_peak(channelnumber) = NaN;
-                ind_peak(channelnumber) = NaN;
-                continue
-            end
-            [a I] = sort(smooth_mutual_information(ind_local_extrema), 'descend');
-            ind_local_max2{channelnumber} = [];
-            for i = 1:num_peak %find the biggest two local extrema with deltat in -1~1 sec.
-                if (time(ind_local_extrema(I(i))) < -1000) || (time(ind_local_extrema(I(i))) > 1000) ||  smooth_mutual_information(ind_local_extrema(I(i)))-baseline < 0.1% the 100 points, timeshift is 1000
-                else
-                    ind_local_max2{channelnumber} = [ind_local_max2{channelnumber} ind_local_extrema(I(i))]; %factor out biggest 'num_peak' local extrema
-                end
-            end
-            if isempty(ind_local_max2{channelnumber})
-                MI_peak(channelnumber) = NaN;
-                ind_peak(channelnumber) = NaN;
-            else
-                ind_local_max2{channelnumber} = sort(ind_local_max2{channelnumber}, 'descend');
-                MI_peaks{channelnumber} = smooth_mutual_information(ind_local_max2{channelnumber});
-                %pick the right one
-                ind_peak(channelnumber) = ind_local_max2{channelnumber}(1);
-                peak_time(channelnumber) = time(ind_peak(channelnumber));
-                MI_peak(channelnumber) = smooth_mutual_information(ind_peak(channelnumber));
-            end
-            
-            %calculate MI_width by seeing MI curve as a Gaussian distribution. So the unit of MI_width would be ms.
-            mutual_information = MIx;
-            mean_MI_distr = 0;
-            sq_MI_distr = 0;
-            for j = 1:length(mutual_information)
-                if mutual_information(j) > baseline
-                    mean_MI_distr =  mean_MI_distr+j*(mutual_information(j)-baseline)/sum(mutual_information);
-                    sq_MI_distr =sq_MI_distr+ j^2*(mutual_information(j)-baseline)/sum(mutual_information);
-                end
-            end
-            MI_width(channelnumber) =sqrt(sq_MI_distr-mean_MI_distr^2);
-            
+          
         end
         acf = autocorr(bin_pos,100);
         corr_time = interp1(acf,1:length(acf),0.5,'linear')/60;
         if sorted
-            save([exp_folder,'\MI\sort\',name(12:end),'.mat'],'time','pos_Mutual_infos','v_Mutual_infos', 'joint_Mutual_infos','Redun_Mutual_infos','peak_time', 'MI_peak','MI_width', 'ind_local_max2','corr_time','Video')
+            save([exp_folder,'\MI\sort\',name(12:end),'.mat'],'time','pos_Mutual_infos','v_Mutual_infos', 'joint_Mutual_infos','Redun_Mutual_infos','peak_time', 'MI_peak','MI_width', 'ind_local_max2','corr_time')
         else
             if special
-                save([exp_folder,'\MI\special\',name(7:end),'.mat'],'time','pos_Mutual_infos','v_Mutual_infos', 'joint_Mutual_infos','Redun_Mutual_infos','peak_time', 'MI_peak','MI_width', 'ind_local_max2',  'corr_time','Video')
+                save([exp_folder,'\MI\special\',name(7:end),'.mat'],'time','pos_Mutual_infos','v_Mutual_infos', 'joint_Mutual_infos','Redun_Mutual_infos','peak_time', 'MI_peak','MI_width', 'ind_local_max2',  'corr_time')
             else
-                save([exp_folder,'\MI\unsort\',name(7:end),'.mat'],'time','pos_Mutual_infos','v_Mutual_infos', 'joint_Mutual_infos','Redun_Mutual_infos','peak_time', 'MI_peak','MI_width', 'ind_local_max2',  'corr_time','Video')
+                save([exp_folder,'\MI\unsort\',name(7:end),'.mat'],'time','pos_Mutual_infos','v_Mutual_infos', 'joint_Mutual_infos','Redun_Mutual_infos','peak_time', 'MI_peak','MI_width', 'ind_local_max2',  'corr_time')
             end
         end
     end
