@@ -26,15 +26,15 @@ elseif XOdark
     name = '5G_DB';
     filename = 'DB_5GMI_properties';
 else
-    HMM_former_name = ['0224_OU_',direction, '_G'];
-    HMM_post_name = '_5min_Q100_6.5mW';
+    HMM_former_name = ['0727_OUsmooth_Bright_',direction, '_G4.5_5min_Q100_6.5mW_'];
+    HMM_post_name = 'Hz';
     %     OU_former_name = ['pos_0224_OU_', direction, '_G'];
     %     OU_post_name = '_5min_Q100_6.5mW';
     %     OU_different_G = [3 7.5];
-    name = '5G_BB';
-    filename = 'BB_5GMI_properties';
+    name = '5Fc_BB';
+    filename = 'BB_5FcMI_properties';
 end
-HMM_different_G = [2.5,4.5,9,12,20];
+HMM_different_G = [0.5,1,2,4,8,0];
 %Load calculated MI first(Need to run Calculate_MI.m first to get)
 if sorted
     cd MI\sort
@@ -108,7 +108,7 @@ for channelnumber=1:60 %choose file
     end
     hold off;
 end
-%find MI peak, peak time and MI width
+%% find MI peak, peak time and MI width
 ind_local_max2 =cell(length(HMM_different_G),60);
 MI_peaks = cell(length(HMM_different_G),60);
 MI_width = zeros(5,60);
@@ -201,7 +201,6 @@ end
 
 if sorted
     save([exp_folder,'\Analyzed_data\sort\',filename,'.mat'],'MI_width', 'MI_peak', 'peak_times');
-    
 else
     save([exp_folder,'\Analyzed_data\unsort\',filename,'.mat'],'MI_width', 'MI_peak', 'peak_times');
 end

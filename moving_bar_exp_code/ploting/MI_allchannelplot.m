@@ -2,7 +2,7 @@ close all;
 clear all;
 code_folder = pwd;
 %exp_folder = 'D:\Leo\0409';
-exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0406';
+exp_folder = 'D:\GoogleDrive\retina\Chou''s data\MB';
 cd(exp_folder)
 sorted =0;
 %Load calculated MI first(Need to run Calculate_MI.m first to get)

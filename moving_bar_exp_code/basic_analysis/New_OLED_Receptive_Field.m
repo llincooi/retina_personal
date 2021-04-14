@@ -3,15 +3,16 @@ clear all;
 code_folder = pwd;
 load('oled_channel_pos.mat')
 load('oled_boundary_set.mat')
+load('rr_OLED')
 
 %% things to key in
-displaychannel = 53;%Choose which channel to display
+displaychannel = 1:60;%Choose which channel to display
 save_photo =1;%0 is no save RF photo, 1 is save
 save_svd =1;%0 is no save svd photo, 1 is save
 tstep_axis = 1:9;%for -50ms:-300ms
 fps = 1/30;%50ms
 name = '30Hz_27_RF';%Directory name
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0708';
 
 %%
 N = length(tstep_axis);
@@ -44,7 +45,11 @@ mkdir(name)
 cd (name)
 mkdir sort
 mkdir unsort
-
+cd ([exp_folder, '\Analyzed_data' ])
+mkdir(name)
+cd (name)
+mkdir sort
+mkdir unsort
 %% Delete useless channel
 checkerboard = bin_pos;%Stimulus we use
 null_channel = [];
@@ -85,6 +90,8 @@ for k =displaychannel
     end
 end
 %% calculate SVD
+SVD_SK = zeros(60, side_length, side_length);
+SVD_TK = zeros(60, length(tstep_axis)+1);
 for k =displaychannel
     %calculate SVD
     reshape_RF = zeros(side_length^2,length(tstep_axis));
@@ -96,16 +103,75 @@ for k =displaychannel
         U(:,1) = -U(:,1);
         V(:,1) = -V(:,1);
     end
-    space = reshape(V(:,1),[side_length,side_length]);%Reshape one dimensional spatial filter to two dimensional spatial filter
+    SVD_SK(k, :, :) = reshape(V(:,1),[side_length,side_length]);%Reshape one dimensional spatial filter to two dimensional spatial filter
+    SVD_TK(k, :) =  [0 U(:,1)'];
     %Calculate first component percentage
     power_component = round(diag(S)/sum(diag(S)), 3);%Each component percentage
     disp(['channel',int2str(k),' 1st_component power is ',num2str(power_component(1))])
 end
+%% Plot SVD (and electrode position) ; Find RF
+electrode_x = zeros(1,60);%x positions of electrode
+electrode_y = zeros(1,60);%y positions of electrode
+RF_properties = struct(); %find RF_center by 2D GaussianFit['Amplitude',' X-Coordinate', 'X-Width','Y-Coordinate','Y-Width','Angle'];
+plotellipse = cell(1, 60);
+for k = displaychannel
+    %Calculate electrode position and RF center from SVD
+    electrode_x(k) = (oled_channel_pos(k,1)-meaCenter_x)*side_length/mea_size_bm + round(side_length/2);
+    electrode_y(k) = (oled_channel_pos(k,2)-meaCenter_y)*side_length/mea_size_bm + round(side_length/2);
+    num_spike =  length(analyze_spikes{k});
+    RFpro = RF_finder(squeeze(SVD_SK(k, :, :)));
+    if RFpro(1) < 0.16 %rule out ugly RF
+        displaychannel(displaychannel == k) = [];
+        null_channel = [null_channel k];
+        continue
+    end
+    RF_PropertyNames = {'Amplitude', 'X_Coor', 'X_Width','Y_Coor','Y_Width','Angle'};
+    for i = 1:length(RFpro)
+        RF_properties(k).(RF_PropertyNames{i}) = RFpro(i); % fit to 2D-Guassion
+    end
+    
+    %Plot spatial SVD
+    figure(k+100)
+    imagesc(squeeze(SVD_SK(k, :, :)));hold on;
+    title(k)
+    pbaspect([1 1 1])
+    colormap(gray);
+    colorbar;
+    scatter(electrode_x(k),electrode_y(k), 50, 'r','filled');
+
+    scatter( RF_properties(k).X_Coor, RF_properties(k).Y_Coor, 50, 'b' ,'o','filled')
+
+    
+    %plot RF_ellipse
+    t=-pi:0.01:pi;
+    e_x=RF_properties(k).X_Width*cos(t);
+    e_y=RF_properties(k).Y_Width*sin(t);
+    theta = RF_properties(k).Angle;
+    R_matrix = [cos(theta) sin(theta) ; -sin(theta) cos(theta)];
+    ellipse = R_matrix*[e_x;e_y];
+    e_x=RF_properties(k).X_Coor+ellipse(1,:);
+    e_y=RF_properties(k).Y_Coor+ellipse(2,:);
+    plot(e_x,e_y, 'LineWidth', 2)
+    plotellipse{k} = [e_x;e_y];
+
+    set(gcf,'units','normalized','outerposition',[0 0 1 1])
+    fig = gcf;
+    fig.PaperPositionMode = 'auto';
+    if save_svd
+        if sorted
+            saveas(fig,[exp_folder, '\FIG\RF\', name,'\sort','\spatial_svd_channel', num2str(k)  '.tiff'])
+        else
+            saveas(fig,[exp_folder, '\FIG\RF\', name,'\unsort','\spatial_svd_channel', num2str(k)  '.tiff'])
+        end
+        close(fig);
+    end
+end
+
 %% plot temporal SVD
 for k =displaychannel
     %Calculate and plot temporal SVD
     figure(k+200);hold on;
-    plot([0 tstep_axis*fps*1000] , [0 U(:,1)'], 'LineWidth',3)
+    plot([0 tstep_axis*fps*1000] , SVD_TK(k, :), 'LineWidth',3)
     title(['temporal filter from SVD channel ',int2str(k)])
     xlabel('time before spike(ms)')
     ylabel('relative intensity')
@@ -121,59 +187,6 @@ for k =displaychannel
         close(fig);
     end
 end
-%% Plot SVD (and electrode position) ; Find RF
-electrode_x = zeros(1,60);%x positions of electrode
-electrode_y = zeros(1,60);%y positions of electrode
-RF_properties = struct(); %find RF_center by 2D GaussianFit['Amplitude',' X-Coordinate', 'X-Width','Y-Coordinate','Y-Width','Angle'];
-for k =displaychannel
-    %Calculate electrode position and RF center from SVD
-    electrode_x(k) = (oled_channel_pos(k,1)-meaCenter_x)*side_length/mea_size_bm + round(side_length/2);
-    electrode_y(k) = (oled_channel_pos(k,2)-meaCenter_y)*side_length/mea_size_bm + round(side_length/2);
-    num_spike =  length(analyze_spikes{k});
-
-    RFpro = RF_finder(space);
-    RF_PropertyNames = {'Amplitude', 'X_Coor', 'X_Width','Y_Coor','Y_Width','Angle'};
-    for i = 1:length(RFpro)
-        RF_properties(k).(RF_PropertyNames{i}) = RFpro(i); % fit to 2D-Guassion
-    end
-    
-    %Plot spatial SVD
-    figure(k+100)
-    imagesc(space);hold on;
-    title(k)
-    pbaspect([1 1 1])
-    colormap(gray);
-    colorbar;
-    scatter(electrode_x(k),electrode_y(k), 50, 'r','filled');
-    if num_spike /stimulus_length > 1
-        scatter( RF_properties(k).X_Coor, RF_properties(k).Y_Coor, 50, 'b' ,'o','filled')
-    end
-    
-    %plot RF_ellipse
-    t=-pi:0.01:pi;
-    e_x=RF_properties(k).X_Width*cos(t);
-    e_y=RF_properties(k).Y_Width*sin(t);
-    theta = RF_properties(k).Angle;
-    R_matrix = [cos(theta) sin(theta) ; -sin(theta) cos(theta)];
-    ellipse = R_matrix*[e_x;e_y];
-    e_x=RF_properties(k).X_Coor+ellipse(1,:);
-    e_y=RF_properties(k).Y_Coor+ellipse(2,:);
-    plot(e_x,e_y, 'LineWidth', 2)
-
-    set(gcf,'units','normalized','outerposition',[0 0 1 1])
-    fig = gcf;
-    fig.PaperPositionMode = 'auto';
-    if save_svd
-        if sorted
-            saveas(fig,[exp_folder, '\FIG\RF\', name,'\sort','\spatial_svd_channel', num2str(k)  '.tiff'])
-        else
-            saveas(fig,[exp_folder, '\FIG\RF\', name,'\unsort','\spatial_svd_channel', num2str(k)  '.tiff'])
-        end
-%         close(fig);
-    end
-end
-
-
 %% plot RF & electrode position & RF center
 for k = displaychannel
     %plot RF & electrode position & RF center
@@ -186,9 +199,7 @@ for k = displaychannel
         colormap(gray);
         colorbar;
         scatter(electrode_x(k),electrode_y(k), 10, 'r','filled');
-        if num_spike /stimulus_length > 1
-            scatter( RF_properties(k).X_Coor, RF_properties(k).Y_Coor, 50, 'b' ,'o','filled')
-        end
+        scatter( RF_properties(k).X_Coor, RF_properties(k).Y_Coor, 50, 'b' ,'o','filled')
         
     end
     
@@ -203,36 +214,84 @@ for k = displaychannel
         end
         close(fig);
     end
-   
-    
 end
-%% Only for direction = 'UL_DR'
-for k = displaychannel
-    offset = round(RF_properties(k).X_Coor)-round(RF_properties(k).Y_Coor);
-    iSK = 0;
-    for i  = tstep_axis
-        iSK = iSK+squeeze(gauss_RF(i,:,:,k));
-    end
-    figure(300+k);hold on;
-    plot(diag(iSK,offset))
-    plot(diag(space,offset))
-    
-    xaxis = linspace(1,length(diag(iSK,offset)),1000);
-    bar = zeros(1,1000);
-    bc = interp1(xaxis, 1:1000, find(diag(space,offset) == max(diag(space,offset))), 'nearest');
-    hw = round((bar_wid*2+1)/mea_size_bm*side_length/sqrt(2)/length(diag(iSK,offset))*1000/2);
-    bar(bc-hw:bc+hw) = max(diag(space,offset));
-    plot(xaxis,bar);
-    
-    figure(400+k);
-    imagesc(iSK);hold on;
+
+%% Plot All Channel
+f_all = figure('Name', 'All_Receptivefield','units','normalized','outerposition',[0 0 1 1])
+ha = tight_subplot(8,8,[.04 .02],[0.07 0.02],[.02 .02]);
+for k =displaychannel
+    figure(f_all)
+    axes(ha(rr(k)));        
+    imagesc(squeeze(SVD_SK(k, :, :)));hold on;
+    %Plot spatial SVD    
+    title(k)
     pbaspect([1 1 1])
     colormap(gray);
-    colorbar;
-    scatter( RF_properties(k).X_Coor, RF_properties(k).Y_Coor, 50, 'b' ,'o','filled')
-    plot(e_x,e_y, 'LineWidth', 2)
 end
-%% Change coordinates, resacle;
+set(f_all,'units','normalized','outerposition',[0 0 9/16 1])
+f_all.PaperPositionMode = 'auto';
+
+if save_photo
+    if sorted
+        saveas(f_all,[exp_folder, '\FIG\RF\', name,'\sort','\ALL.tiff'])  %#ok<UNRCH>
+    else
+        saveas(f_all,[exp_folder, '\FIG\RF\', name,'\unsort','\All.tiff'])
+    end
+    close(f_all);
+end
+
+% %% Only for direction = 'UL_DR'
+% for k = displaychannel
+%     offset = round(RF_properties(k).X_Coor)-round(RF_properties(k).Y_Coor);
+%     iSK = 0;
+%     for i  = tstep_axis
+%         iSK = iSK+squeeze(gauss_RF(i,:,:,k));
+%     end
+%     figure(300+k);hold on;
+%     plot(diag(iSK,offset),'LineWidth', 2)
+%     plot(diag(squeeze(SVD_SK(k, :, :)),offset),'LineWidth', 2)
+%     
+%     xaxis = linspace(1,length(diag(iSK,offset)),1000);
+%     bar = zeros(1,1000);
+%     bc = interp1(xaxis, 1:1000, find(diag(squeeze(SVD_SK(k, :, :)),offset) == max(diag(squeeze(SVD_SK(k, :, :)),offset))), 'nearest');
+%     hw = round((bar_wid*2+1)/mea_size_bm*side_length/sqrt(2)/length(diag(iSK,offset))*1000/2);
+%     bar(max(bc-hw,1):min(bc+hw, 1000)) = max(diag(squeeze(SVD_SK(k, :, :)),offset));
+%     plot(xaxis,bar,'LineWidth', 2)
+%     
+%     fig = gcf;
+%     set(fig,'units','normalized','outerposition',[0 0 1 1])
+%     fig.PaperPositionMode = 'auto';
+%      if save_photo
+%         if sorted
+%             saveas(fig,[exp_folder, '\FIG\RF\', name,'\sort','\MBcut_ch', num2str(k)  '.tiff']) %#ok<UNRCH>
+%         else
+%             saveas(fig,[exp_folder, '\FIG\RF\', name,'\unsort','\MBcut_ch', num2str(k)  '.tiff']) %#ok<UNRCH>
+%         end
+%         close(fig);
+%     end
+%     
+%     figure(400+k);
+%     imagesc(iSK);hold on;
+%     pbaspect([1 1 1])
+%     colormap(gray);
+%     colorbar;
+%     scatter( RF_properties(k).X_Coor, RF_properties(k).Y_Coor, 50, 'b' ,'o','filled')
+%     plot(plotellipse{k}(1,:),plotellipse{k}(2,:), 'LineWidth', 2)
+%         fig = gcf;
+%     set(fig,'units','normalized','outerposition',[0 0 9/16 1])
+%     fig.PaperPositionMode = 'auto';
+%      if save_photo
+%         if sorted
+%             saveas(fig,[exp_folder, '\FIG\RF\', name,'\sort','\iSK_ch', num2str(k)  '.tiff']) %#ok<UNRCH>
+%         else
+%             saveas(fig,[exp_folder, '\FIG\RF\', name,'\unsort','\iSK_ch', num2str(k)  '.tiff']) %#ok<UNRCH>
+%         end
+%         close(fig);
+%     end
+% end
+
+%% Change coordinates, resacle;  
+%Let X_Width to be Long-axis, Angle is the angel between Long-axis and x-axis
 RF_pixel_size = mea_size_bm/side_length*micro_per_pixel %mircometer
 for k = displaychannel
     RF_properties(k).X_Coor = ( RF_properties(k).X_Coor - round(side_length/2))/(side_length/mea_size_bm)+meaCenter_x;
@@ -259,6 +318,7 @@ if sorted
     save([exp_folder,'\Analyzed_data\', name, '\sort\RF_properties.mat'],'RF_properties');
 else
     save([exp_folder,'\Analyzed_data\', name, '\unsort\RF_properties.mat'],'RF_properties');
+    save([exp_folder,'\Analyzed_data\', name, '\unsort\STK.mat'],'SVD_SK', 'SVD_TK');
 end
 
 
