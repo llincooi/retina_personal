@@ -3,7 +3,7 @@ close all;
 clear all;
 %% Setting
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
+exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210331';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503'
 load('rr.mat')
 cd(exp_folder);
@@ -79,7 +79,7 @@ plot_all_channel(Video.series_type,save_photo,time(round(size(cSTA,2)/2):end),cS
 tau = zeros(1,60);
 Flicker_OnOff_Index = ones(1,60)*-10000000;
 for channelnumber=useful_channelnumber
-    Flicker_OnOff_Index(channelnumber) = sum(cSTA(channelnumber,round(length(cSTA)/2)-200/bin:round(length(cSTA)/2))) / sum(abs(cSTA(channelnumber, round(length(cSTA)/2)-200/bin:round(length(cSTA)/2))));
+    Flicker_OnOff_Index(channelnumber) = sum(cSTA(channelnumber,end-200/bin:end)) / sum(abs(cSTA(channelnumber, end-200/bin:end)));
     diff_smooth_cSTA = diff(smooth(cSTA(channelnumber,:)));
     for l = fliplr(2:length(diff_smooth_cSTA))
         if diff_smooth_cSTA(l)*diff_smooth_cSTA(l-1) <= 0

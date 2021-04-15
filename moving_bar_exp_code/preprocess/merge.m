@@ -4,7 +4,7 @@ close all;
 delay_correction = 0.0071;
 
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
+exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210413';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
 videoworkspace = '\\192.168.0.100\Experiment\Retina\2020Videos\0219v\videoworkspace\';
 cd(exp_folder)
@@ -20,7 +20,7 @@ merge_txt = textscan(merge_ID,'%s','delimiter','\n');
 cd ..
 mkdir merge
 
-for m = 10:num_files
+for m = 21:num_files
     name = txt{1}{m};
     data_name = name;
     workspace_name = merge_txt{1}{m};

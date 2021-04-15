@@ -11,9 +11,13 @@ save_photo =1;%0 is no save RF photo, 1 is save
 save_svd =1;%0 is no save svd photo, 1 is save
 tstep_axis = 1:9;%for -50ms:-300ms
 fps = 1/30;%50ms
-name = '30Hz_27_RF';%Directory name
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0708';
-
+name = '30Hz_27_RF_15min';%Directory name
+exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210413';
+cd(exp_folder)
+%% For unsorted spikes
+load('merge\merge_0224_Checkerboard_30Hz_27_15min_Br50_Q100.mat')
+analyze_spikes = reconstruct_spikes;
+sorted = 0;
 %%
 N = length(tstep_axis);
 if  mod(sqrt(N),1) == 0 %if N is a perfact square
@@ -22,12 +26,6 @@ else
     K = flip(1:ceil(N/2));
     N_middle_factor = K(find(rem(N,K)==0));
 end
-
-cd(exp_folder)
-%% For unsorted spikes
-load('merge\merge_0224_Checkerboard_30Hz_27_15min_Br50_Q100.mat')
-analyze_spikes = reconstruct_spikes;
-sorted = 0;
 %% For sorted spikes
 % load('sort_merge_spike\sort_merge_0224_Checkerboard_20Hz_27_5min_Br50_Q100.mat')
 % unit = 1;
@@ -38,6 +36,7 @@ sorted = 0;
 
 %% Create directory
 mkdir FIG
+mkdir Analyzed_data
 cd FIG
 mkdir RF
 cd RF
@@ -240,7 +239,7 @@ if save_photo
     close(f_all);
 end
 
-% %% Only for direction = 'UL_DR'
+%% Only for direction = 'UL_DR'
 % for k = displaychannel
 %     offset = round(RF_properties(k).X_Coor)-round(RF_properties(k).Y_Coor);
 %     iSK = 0;
@@ -294,10 +293,10 @@ end
 %Let X_Width to be Long-axis, Angle is the angel between Long-axis and x-axis
 RF_pixel_size = mea_size_bm/side_length*micro_per_pixel %mircometer
 for k = displaychannel
-    RF_properties(k).X_Coor = ( RF_properties(k).X_Coor - round(side_length/2))/(side_length/mea_size_bm)+meaCenter_x;
-    RF_properties(k).Y_Coor = ( RF_properties(k).Y_Coor - round(side_length/2))/(side_length/mea_size_bm)+meaCenter_y;
-    RF_properties(k).X_Width =  1.5*RF_properties(k).X_Width*RF_pixel_size; %%mm %%1.5*sdv accroding to Gollisch
-    RF_properties(k).Y_Width =  1.5*RF_properties(k).Y_Width*RF_pixel_size; %%mm %%1.5*sdv accroding to Gollisch
+    RF_properties(k).X_Coor = ( RF_properties(k).X_Coor - round(side_length/2))/(side_length/mea_size_bm)+meaCenter_x; %pixel on monitor
+    RF_properties(k).Y_Coor = ( RF_properties(k).Y_Coor - round(side_length/2))/(side_length/mea_size_bm)+meaCenter_y; %pixel on monitor
+    RF_properties(k).X_Width =  1.5*RF_properties(k).X_Width*RF_pixel_size; %%\mum %%1.5*sdv accroding to Gollisch
+    RF_properties(k).Y_Width =  1.5*RF_properties(k).Y_Width*RF_pixel_size; %%\mum %%1.5*sdv accroding to Gollisch
     RF_properties(k).radius = sqrt(RF_properties(k).X_Width*RF_properties(k).Y_Width); %"radius" == (a*b)^0.5 for ellipse
     if RF_properties(k).X_Width < RF_properties(k).Y_Width
         temp = RF_properties(k).X_Width;

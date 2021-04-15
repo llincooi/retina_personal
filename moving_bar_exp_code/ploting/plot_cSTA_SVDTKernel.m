@@ -1,7 +1,7 @@
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0708';
+exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210331';
 cd(exp_folder)
-load(['Analyzed_data\unsort\0224_cSTA_wf_3min_Q100.mat'])
-load('Analyzed_data\30Hz_27_RF\unsort\STK.mat')
+load(['Analyzed_data\unsort\0224_cSTA_wf_3min_Q100_re.mat'])
+load('Analyzed_data\30Hz_27_RF_15min\unsort\STK.mat')
 load('rr.mat')
 
 figure('units','normalized','outerposition',[0 0 1 1])
@@ -10,14 +10,14 @@ for channelnumber=1:60
     axes(ha(rr(channelnumber)));
     plot(time,cSTA(channelnumber,:),'LineWidth',2,'LineStyle','-');hold on;
     xlim([-500, 0])
-%     plot((0:length(SVD_TK(1,:))-1)*-1000/30,SVD_TK(channelnumber,:)/min(SVD_TK(channelnumber,:))*min(cSTA(channelnumber,:)),'LineWidth',2,'LineStyle','-');hold on;
-    plot((0:length(SVD_TK(1,:))-1)*-1000/30,SVD_TK(channelnumber,:),'LineWidth',2,'LineStyle','-');hold on;
+    plot((0:length(SVD_TK(1,:))-1)*-1000/30,SVD_TK(channelnumber,:)/min(SVD_TK(channelnumber,:))*min(cSTA(channelnumber,:)),'LineWidth',2,'LineStyle','-');hold on;
+%     plot((0:length(SVD_TK(1,:))-1)*-1000/30,SVD_TK(channelnumber,:),'LineWidth',2,'LineStyle','-');hold on;
     grid on
     title(channelnumber)
 end
 
-% set(gcf,'units','normalized','outerposition',[0 0 1 1])
-% fig = gcf;
-% fig.PaperPositionMode = 'auto';
-% saveas(fig,[exp_folder,'\FIG\cSTA\unsort\cSTA_SVDTKernel.tiff'])
+set(gcf,'units','normalized','outerposition',[0 0 1 1])
+fig = gcf;
+fig.PaperPositionMode = 'auto';
+saveas(fig,[exp_folder,'\FIG\cSTA\unsort\cSTA_15SVDTKernel.tiff'])
 
