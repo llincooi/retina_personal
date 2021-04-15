@@ -128,8 +128,7 @@ for k = displaychannel
     for i = 1:length(RFpro)
         RF_properties(k).(RF_PropertyNames{i}) = RFpro(i); % fit to 2D-Guassion
     end
-    RF_properties(k).X_Width =  1.5*RF_properties(k).X_Width; %%\mum %%1.5*sdv accroding to Gollisch
-    RF_properties(k).Y_Width =  1.5*RF_properties(k).Y_Width; %%\mum %%1.5*sdv accroding to Gollisch
+    
     %Plot spatial SVD
     figure(k+100)
     imagesc(squeeze(SVD_SK(k, :, :)));hold on;
