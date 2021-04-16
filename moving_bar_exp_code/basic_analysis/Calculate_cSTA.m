@@ -3,7 +3,7 @@ close all;
 clear all;
 %% Setting
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210331';
+exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210413';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503'
 load('rr.mat')
 cd(exp_folder);
@@ -96,6 +96,7 @@ hist(Flicker_OnOff_Index(useful_channelnumber));
 xlim([-1 1])
 if save_photo
     save([exp_folder,'\Analyzed_data\',sort_directory,'\',name,'.mat'],'time','cSTA', 'dcSTA', 'Flicker_OnOff_Index', 'tau')
+    saveas(gcf,[exp_folder, '\FIG\cSTA\unsort\',name,'_OnOffIndexDistr.tiff'])
 end
 
 cd (code_folder)
