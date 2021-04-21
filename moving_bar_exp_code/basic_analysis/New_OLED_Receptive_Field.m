@@ -36,7 +36,12 @@ end
 % analyze_spikes = get_multi_unit(exp_folder,sorted_spikes,unit);
 % sorted = 1;
 
-
+%%
+if length(displaychannel) == 60
+    ALL = 1;
+else
+    ALL = 0;
+end
 %% Create directory
 mkdir FIG
 mkdir Analyzed_data
@@ -67,12 +72,6 @@ disp(['useless channels are ',num2str(null_channel)])
 
 displaychannel (null_channel) = [];
 
-%%
-if length(displaychannel) == 60
-    ALL = 1;
-else
-    ALL = 0;
-end
 %% calculate RF
 side_length = length(checkerboard{1});%length of checkerboard
 matcheckerboard = zeros(length(checkerboard),side_length,side_length);
@@ -146,9 +145,9 @@ for k = displaychannel
     colormap(gray);
     colorbar;
     scatter(electrode_x(k),electrode_y(k), 50, 'r','filled');
-
+    
     scatter( RF_properties(k).X_Coor, RF_properties(k).Y_Coor, 50, 'b' ,'o','filled')
-
+    
     
     %plot RF_ellipse
     t=-pi:0.01:pi;
@@ -161,7 +160,7 @@ for k = displaychannel
     e_y=RF_properties(k).Y_Coor+ellipse(2,:);
     plot(e_x,e_y, 'LineWidth', 2)
     plotellipse{k} = [e_x;e_y];
-
+    
     set(gcf,'units','normalized','outerposition',[0 0 1 1])
     fig = gcf;
     fig.PaperPositionMode = 'auto';
@@ -223,31 +222,7 @@ for k = displaychannel
     end
 end
 
-%% Plot All Channel
-if ALL
-    f_all = figure('Name', 'All_Receptivefield','units','normalized','outerposition',[0 0 1 1])
-    ha = tight_subplot(8,8,[.04 .02],[0.07 0.02],[.02 .02]);
-    for k =displaychannel
-        figure(f_all)
-        axes(ha(rr(k)));
-        imagesc(squeeze(SVD_SK(k, :, :)));hold on;
-        %Plot spatial SVD
-        title(k)
-        pbaspect([1 1 1])
-        colormap(gray);
-    end
-    set(f_all,'units','normalized','outerposition',[0 0 9/16 1])
-    f_all.PaperPositionMode = 'auto';
-    
-    if save_photo
-        if sorted
-            saveas(f_all,[exp_folder, '\FIG\RF\', name,'\sort','\ALL.tiff'])  %#ok<UNRCH>
-        else
-            saveas(f_all,[exp_folder, '\FIG\RF\', name,'\unsort','\All.tiff'])
-        end
-        close(f_all);
-    end
-end
+
 %% Only for direction = 'UL_DR'
 for k = displaychannel
     iSK = 0;
@@ -273,7 +248,7 @@ for k = displaychannel
         close(fig);
     end
     
-
+    
     if strcmp(maindirection,'UL_DR')
         offset = round(RF_properties(k).X_Coor)-round(RF_properties(k).Y_Coor);
         
@@ -339,7 +314,7 @@ for k = displaychannel
     end
 end
 
-%% Change coordinates, resacle;  
+%% Change coordinates, resacle;
 %Let X_Width to be Long-axis, Angle is the angel between Long-axis and x-axis
 RF_pixel_size = mea_size_bm/side_length*micro_per_pixel %mircometer
 for k = displaychannel
@@ -360,10 +335,41 @@ for k = displaychannel
     end
 end
 
-%% plot radius distribution
+%% plot radius distribution and All Channel
 if ALL
+    f_all = figure('Name', 'All_Receptivefield','units','normalized','outerposition',[0 0 9/16 1]);
+    ha = tight_subplot(8,8,[.04 .02],[0.07 0.02],[.02 .02]);
+    for k =displaychannel
+        figure(f_all)
+        axes(ha(rr(k)));
+        imagesc(squeeze(SVD_SK(k, :, :)));hold on;
+        %Plot spatial SVD
+        title(k)
+        pbaspect([1 1 1])
+        colormap(gray);
+    end
+    
     figure(99);
-    histogram([RF_properties.radius])
+    histogram([RF_properties.radius]);
+    figure(98);
+    histogram([RF_properties.X_Width]);
+    figure(97);
+    histogram([RF_properties.Y_Width]);
+    fi = [f_all, figure(99), figure(98), figure(97)];
+    namecell = {'ALL', 'RadiusDistribution', 'LongAxisDistribution', 'ShortAxisDistribution'};
+    for fn = 1:4
+        fig = fi(fn);
+        if fn==1 else set(fig,'units','normalized','outerposition',[0 0 1 1]); end
+        fig.PaperPositionMode = 'auto';
+        if save_photo
+            if sorted
+                saveas(fig,[exp_folder, '\FIG\RF\', name,'\sort\,',namecell{fn} ,'.tiff'])  %#ok<UNRCH>
+            else
+                saveas(fig,[exp_folder, '\FIG\RF\', name,'\unsort\,',namecell{fn} ,'.tiff'])
+            end
+            close(fig);
+        end
+    end
 end
 
 %%
