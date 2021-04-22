@@ -11,13 +11,13 @@ save_photo =1;%0 is no save RF photo, 1 is save
 save_svd =1;%0 is no save svd photo, 1 is save
 tstep_axis = 1:9;%for -50ms:-300ms
 fps = 1/30;%33.3ms
-name = '30Hz_27_RF_15min';%Directory name
-exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210413';
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
+name = '30Hz_27_RF_15min_re';%Directory name
+exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210420';
+% exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
 cd(exp_folder)
 maindirection = 'UR_DL';
 %% For unsorted spikes
-load('merge\merge_0224_Checkerboard_30Hz_27_15min_Br50_Q100.mat')
+load('merge\merge_0224_Checkerboard_30Hz_27_15min_Br50_Q100_re.mat')
 analyze_spikes = reconstruct_spikes;
 sorted = 0;
 %%
@@ -363,9 +363,9 @@ if ALL
         fig.PaperPositionMode = 'auto';
         if save_photo
             if sorted
-                saveas(fig,[exp_folder, '\FIG\RF\', name,'\sort\,',namecell{fn} ,'.tiff'])  %#ok<UNRCH>
+                saveas(fig,[exp_folder, '\FIG\RF\', name,'\sort\',namecell{fn} ,'.tiff'])  %#ok<UNRCH>
             else
-                saveas(fig,[exp_folder, '\FIG\RF\', name,'\unsort\,',namecell{fn} ,'.tiff'])
+                saveas(fig,[exp_folder, '\FIG\RF\', name,'\unsort\',namecell{fn} ,'.tiff'])
             end
             close(fig);
         end
