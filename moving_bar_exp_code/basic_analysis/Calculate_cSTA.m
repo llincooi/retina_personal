@@ -3,7 +3,7 @@ close all;
 clear all;
 %% Setting
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210413';
+exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210420';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503'
 load('rr.mat')
 cd(exp_folder);
@@ -74,7 +74,7 @@ for i = 1:60
 end
 
 %% Plot figure
-plot_all_channel(Video.series_type,save_photo,time(round(size(cSTA,2)/2):end),cSTA(:,round(size(cSTA,2)/2):end),useful_channelnumber,exp_folder,sorted,name);
+plot_all_channel('cSTA',save_photo,time(round(size(cSTA,2)/2):end),cSTA(:,round(size(cSTA,2)/2):end),useful_channelnumber,exp_folder,sorted,name);
 %% Calculate OnOff Index and dSTA/dt
 tau = zeros(1,60);
 Flicker_OnOff_Index = ones(1,60)*-10000000;
