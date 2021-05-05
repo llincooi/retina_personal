@@ -6,18 +6,18 @@ load('oled_boundary_set.mat')
 load('rr_OLED')
 
 %% things to key in
-displaychannel = 52;%Choose which channel to display
-save_photo =0;%0 is no save RF photo, 1 is save
-save_svd =0;%0 is no save svd photo, 1 is save
+displaychannel = 1:60;%Choose which channel to display
+save_photo =1;%0 is no save RF photo, 1 is save
+save_svd =1;%0 is no save svd photo, 1 is save
 tstep_axis = 1:9;%for -50ms:-300ms
 fps = 1/30;%33.3ms
-name = '30Hz_27_RF_15min';%Directory name
-exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210420';
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
+name = '30Hz_27_RF_15min_re';%Directory name
+exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210504';
+% exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
 cd(exp_folder)
-maindirection = 'UR_DL';
+maindirection = 'RL';
 %% For unsorted spikes
-load('merge\merge_0224_Checkerboard_30Hz_27_15min_Br50_Q100.mat')
+load('merge\merge_0224_Checkerboard_30Hz_27_15min_Br50_Q100_re.mat')
 analyze_spikes = reconstruct_spikes;
 sorted = 0;
 %%
@@ -253,51 +253,59 @@ for k = displaychannel
         offset = round(RF_properties(k).X_Coor)-round(RF_properties(k).Y_Coor);
         
         figure(300+k);hold on;
-        plot(diag(iSK,offset),'LineWidth', 2)
-        plot(diag(squeeze(SVD_SK(k, :, :)),offset),'LineWidth', 2)
+        isk = diag(iSK,offset);
+        isk = isk/min(isk);
+        plot(isk,'LineWidth', 2)
+        plot(diag(squeeze(SVD_SK(k, :, :)),offset)/max(diag(squeeze(SVD_SK(k, :, :)),offset)),'LineWidth', 2)
         
         xaxis = linspace(1,length(diag(iSK,offset)),1000);
         bar = zeros(1,1000);
         bc = interp1(xaxis, 1:1000, find(diag(squeeze(SVD_SK(k, :, :)),offset) == max(diag(squeeze(SVD_SK(k, :, :)),offset))), 'nearest');
         hw = round((bar_wid*2+1)/mea_size_bm*side_length/sqrt(2)/length(diag(iSK,offset))*1000/2);
-        bar(max(bc-hw,1):min(bc+hw, 1000)) = max(diag(squeeze(SVD_SK(k, :, :)),offset));
+        bar(max(bc-hw,1):min(bc+hw, 1000)) = 1;
         plot(xaxis,bar,'LineWidth', 2)
     elseif strcmp(maindirection, 'UR_DL')
         offset = side_length+1-round(RF_properties(k).X_Coor)-round(RF_properties(k).Y_Coor);
         figure(300+k);hold on;
-        plot(diag(fliplr(iSK),offset),'LineWidth', 2)
-        plot(diag(fliplr(squeeze(SVD_SK(k, :, :))),offset),'LineWidth', 2)
+        isk = diag(fliplr(iSK),offset);
+        isk = isk/min(isk);
+        plot(isk,'LineWidth', 2)
+        plot(diag(fliplr(squeeze(SVD_SK(k, :, :)))/max(diag(fliplr(squeeze(SVD_SK(k, :, :))),offset)),offset),'LineWidth', 2)
         
         xaxis = linspace(1,length(diag(iSK,offset)),1000);
         bar = zeros(1,1000);
         bc = interp1(xaxis, 1:1000, find(diag(fliplr(squeeze(SVD_SK(k, :, :))),offset) == max(diag(fliplr(squeeze(SVD_SK(k, :, :))),offset))), 'nearest');
         hw = round((bar_wid*2+1)/mea_size_bm*side_length/sqrt(2)/length(diag(fliplr(iSK),offset))*1000/2);
-        bar(max(bc-hw,1):min(bc+hw, 1000)) = max(diag(fliplr(squeeze(SVD_SK(k, :, :))),offset));
+        bar(max(bc-hw,1):min(bc+hw, 1000)) = 1;
         plot(xaxis,bar,'LineWidth', 2)
     elseif strcmp(maindirection, 'RL')
         offset = round(RF_properties(k).Y_Coor);
         figure(300+k);hold on;
-        plot(iSK(offset,:),'LineWidth', 2)
-        plot(squeeze(SVD_SK(k, offset, :)),'LineWidth', 2)
+        isk = iSK(offset,:);
+        isk = isk/min(isk);
+        plot(isk,'LineWidth', 2)
+        plot(squeeze(SVD_SK(k, offset, :))/max(squeeze(SVD_SK(k, offset, :))),'LineWidth', 2)
         
         xaxis = linspace(1,length(iSK(offset,:)),1000);
         bar = zeros(1,1000);
         bc = interp1(xaxis, 1:1000, find(squeeze(SVD_SK(k, offset, :)) == max(squeeze(SVD_SK(k, offset, :)))), 'nearest');
         hw = round((bar_wid*2+1)/mea_size_bm*side_length/sqrt(2)/length(iSK(offset,:))*1000/2);
-        bar(max(bc-hw,1):min(bc+hw, 1000)) = max(squeeze(SVD_SK(k, offset, :)));
+        bar(max(bc-hw,1):min(bc+hw, 1000)) = 1;
         plot(xaxis,bar,'LineWidth', 2)
         
     elseif strcmp(maindirection, 'UD')
         offset = round(RF_properties(k).X_Coor);
         figure(300+k);hold on;
-        plot(iSK(:, offset),'LineWidth', 2)
-        plot(squeeze(SVD_SK(k, :, offset)),'LineWidth', 2)
+        isk = iSK(:, offset);
+        isk = isk/min(isk);
+        plot(isk,'LineWidth', 2)
+        plot(squeeze(SVD_SK(k, :, offset))/max(squeeze(SVD_SK(k, :, offset))),'LineWidth', 2)
         
         xaxis = linspace(1,length(iSK(:, offset)),1000);
         bar = zeros(1,1000);
         bc = interp1(xaxis, 1:1000, find(squeeze(SVD_SK(k, :, offset)) == max(squeeze(SVD_SK(k, :, offset)))), 'nearest');
         hw = round((bar_wid*2+1)/mea_size_bm*side_length/sqrt(2)/length(iSK(:, offset))*1000/2);
-        bar(max(bc-hw,1):min(bc+hw, 1000)) = max(squeeze(SVD_SK(k, :, offset)));
+        bar(max(bc-hw,1):min(bc+hw, 1000)) = 1;
         plot(xaxis,bar,'LineWidth', 2)
     end
     
@@ -306,9 +314,9 @@ for k = displaychannel
     fig.PaperPositionMode = 'auto';
     if save_photo
         if sorted
-            saveas(fig,[exp_folder, '\FIG\RF\', name,'\sort','\MBcut_ch', num2str(k)  '.tiff']) %#ok<UNRCH>
+            saveas(fig,[exp_folder, '\FIG\RF\', name,'\sort','\normalizedMBcut_ch', num2str(k)  '.tiff']) %#ok<UNRCH>
         else
-            saveas(fig,[exp_folder, '\FIG\RF\', name,'\unsort','\MBcut_ch', num2str(k)  '.tiff']) %#ok<UNRCH>
+            saveas(fig,[exp_folder, '\FIG\RF\', name,'\unsort','\normalizedMBcut_ch', num2str(k)  '.tiff']) %#ok<UNRCH>
         end
         close(fig);
     end
