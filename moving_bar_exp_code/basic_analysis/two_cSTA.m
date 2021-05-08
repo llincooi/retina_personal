@@ -1,6 +1,6 @@
 clear all
 close all
-exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210506';
+exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210504';
 cd(exp_folder)
 load('rr.mat')
 

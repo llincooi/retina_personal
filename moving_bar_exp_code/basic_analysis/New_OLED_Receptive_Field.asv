@@ -6,9 +6,9 @@ load('oled_boundary_set.mat')
 load('rr_OLED')
 
 %% things to key in
-displaychannel = 1:60;%Choose which channel to display
-save_photo =1;%0 is no save RF photo, 1 is save
-save_svd =1;%0 is no save svd photo, 1 is save
+displaychannel = 21;%Choose which channel to display
+save_photo =0;%0 is no save RF photo, 1 is save
+save_svd =0;%0 is no save svd photo, 1 is save
 tstep_axis = 1:9;%for -50ms:-300ms
 fps = 1/30;%33.3ms
 name = '30Hz_27_RF_15min_re';%Directory name
@@ -179,9 +179,8 @@ for k =displaychannel
     %Calculate and plot temporal SVD
     figure(k+200);hold on;
     plot([0 tstep_axis*fps*1000] , SVD_TK(k, :), 'LineWidth',3)
-    iTK = [0, squeeze(sum(gauss_RF(:,:,:,k), [2,3])).'];
-    iTK = -iTK*iTK(2)/abs(iTK(2));
-    plot([0 tstep_axis*fps*1000] , iTK/min(iTK)*min(SVD_TK(k, :)), 'LineWidth',1,'LineStyle','--');
+    squeeze(sum(gauss_RF(:,:,:,k), [2,3]))
+    plot([0 tstep_axis*fps*1000] , SVD_TK(k, :), 'LineWidth',3)
     title(['temporal filter from SVD channel ',int2str(k)])
     xlabel('time before spike(ms)')
     ylabel('relative intensity')
