@@ -3,14 +3,14 @@ close all;
 clear all;
 %% Setting
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210506';
+exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210504';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503'
 load('rr.mat')
 cd(exp_folder);
 sorted = 0;
 unit = 0;
 save_photo = 1;
-name = '0224_cSTA_wf_3min_Q100';
+name = '0224_cSTA_wf_3min_Q100_re';
 %name = '0609_cSTA_UL_DR_5min_Q100_6.5mW_-100';
 mean_lumin = 6.5;
 %% Make directory
