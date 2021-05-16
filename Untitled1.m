@@ -14,6 +14,7 @@ syms w  'real'
 
 
 H = A*(1j*w+b)/ ((1j*w+a)*(1j*w+b)+g);
+pretty(real(H))
 Kt = ifourier(H, t);
 % 
 w0 = sqrt(4*g-(a-b)^2)/2;

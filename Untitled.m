@@ -10,9 +10,12 @@ syms tau 'positive'
 syms t 'real'
 assume(t>=0)
 syms w  'real'
+syms lambda
 
 
 H = A*(1j*w+b-g*l)/ (((1j*w+a)*(1j*w+b)+g)*(1j*w+c));
+lambda = tan(angle(H))/(1+tan(angle(H)));
+pretty(simplify(lambda))
 % H = A*(1j*w+b)/ ((1j*w+a)*(1j*w+b)+g);
 Kt = ifourier(H, t);
 % 
