@@ -9,13 +9,13 @@ load('rr_OLED')
 displaychannel = 1:60;%Choose which channel to display
 save_photo =1;%0 is no save RF photo, 1 is save
 save_svd =1;%0 is no save svd photo, 1 is save
-tstep_axis = 1:9;%for -50ms:-300ms
+tstep_axis = 1:30;%for -50ms:-300ms
 fps = 1/30;%33.3ms
 name = '30Hz_27_RF_15min_re';%Directory name
-exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210504';
+exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210513';
 % exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
 cd(exp_folder)
-maindirection = 'RL';
+maindirection = 'UD';
 %% For unsorted spikes
 load('merge\merge_0224_Checkerboard_30Hz_27_15min_Br50_Q100_re.mat')
 analyze_spikes = reconstruct_spikes;
@@ -88,7 +88,7 @@ for k =displaychannel
         sum_checkerboard = zeros(length(bin_pos{1}));
         for j = 1:length(analyze_spikes{k})
             spike_time = analyze_spikes{k}(j); %s
-            RF_frame = max(0, floor((spike_time - i*fps)*60));
+            RF_frame = max(1, floor((spike_time - i*fps)*60));
             sum_checkerboard = sum_checkerboard + squeeze(matcheckerboard(RF_frame,:,:));
         end
         RF(i,:,:,k) = sum_checkerboard/length(analyze_spikes{k});
@@ -389,7 +389,7 @@ if save_svd && save_photo
         save([exp_folder,'\Analyzed_data\', name, '\sort\RF_properties.mat'],'RF_properties');
     else
         save([exp_folder,'\Analyzed_data\', name, '\unsort\RF_properties.mat'],'RF_properties');
-        save([exp_folder,'\Analyzed_data\', name, '\unsort\STK.mat'],'SVD_SK', 'SVD_TK');
+        save([exp_folder,'\Analyzed_data\', name, '\unsort\STK.mat'],'SVD_SK', 'SVD_TK', 'gauss_RF');
     end
 end
 
