@@ -6,18 +6,18 @@ load('oled_boundary_set.mat')
 load('rr_OLED')
 
 %% things to key in
-displaychannel = 1:60;%Choose which channel to display
-save_photo =1;%0 is no save RF photo, 1 is save
-save_svd =1;%0 is no save svd photo, 1 is save
-tstep_axis = 1:9;%for -50ms:-300ms
+displaychannel = [28 31];%Choose which channel to display
+save_photo =0;%0 is no save RF photo, 1 is save
+save_svd =0;%0 is no save svd photo, 1 is save
+tstep_axis = 1:30;%for -50ms:-300ms
 fps = 1/30;%33.3ms
-name = '30Hz_27_RF_15min';%Directory name
+name = '30Hz_27_RF_15min_re';%Directory name
 exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210513';
 % exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
 cd(exp_folder)
 maindirection = 'UD';
 %% For unsorted spikes
-load('merge\merge_0224_Checkerboard_30Hz_27_15min_Br50_Q100.mat')
+load('merge\merge_0224_Checkerboard_30Hz_27_15min_Br50_Q100_re.mat')
 analyze_spikes = reconstruct_spikes;
 sorted = 0;
 %%
@@ -108,10 +108,14 @@ for k =displaychannel
     end
     SVD_SK(k, :, :) = reshape(V(:,1),[side_length,side_length]);%Reshape one dimensional spatial filter to two dimensional spatial filter
     SVD_TK(k, :) =  [0 U(:,1)'];
+    
     %Calculate first component percentage
     power_component = round(diag(S)/sum(diag(S)), 3);%Each component percentage
     disp(['channel',int2str(k),' 1st_component power is ',num2str(power_component(1))])
 end
+
+%     elseif isempty(find( abs(cSTA(i,round(length(cSTA)/2):end))>= 7*std(cSTA(i,1:round(length(cSTA)/2)))))
+%         cSTA(i,:) = NaN;
 %% Plot SVD (and electrode position) ; Find RF
 electrode_x = zeros(1,60);%x positions of electrode
 electrode_y = zeros(1,60);%y positions of electrode
@@ -123,11 +127,11 @@ for k = displaychannel
     electrode_y(k) = (oled_channel_pos(k,2)-meaCenter_y)*side_length/mea_size_bm + round(side_length/2);
     num_spike =  length(analyze_spikes{k});
     RFpro = RF_finder(squeeze(SVD_SK(k, :, :)));
-%     if RFpro(1) < 0.16 %rule out ugly RF
-%         displaychannel(displaychannel == k) = [];
-%         null_channel = [null_channel k];
-%         continue
-%     end
+    if RFpro(1) < 0.16 %rule out ugly RF
+        displaychannel(displaychannel == k) = [];
+        null_channel = [null_channel k];
+        continue
+    end
     RF_PropertyNames = {'Amplitude', 'X_Coor', 'X_Width','Y_Coor','Y_Width','Angle'};
     for i = 1:length(RFpro)
         RF_properties(k).(RF_PropertyNames{i}) = RFpro(i); % fit to 2D-Guassion
