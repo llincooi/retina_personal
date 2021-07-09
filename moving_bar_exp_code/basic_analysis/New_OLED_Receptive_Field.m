@@ -36,6 +36,20 @@ end
 % analyze_spikes = get_multi_unit(exp_folder,sorted_spikes,unit);
 % sorted = 1;
 
+%% plot a checkerbroad sample
+% imagesc(checkerboard{1});hold on;
+% pbaspect([1 1 1])
+% colormap(gray);
+% 
+% for k = 1:60
+%     electrode_x(k) = (oled_channel_pos(k,1)-meaCenter_x)*side_length/mea_size_bm + round(side_length/2);
+%     electrode_y(k) = (oled_channel_pos(k,2)-meaCenter_y)*side_length/mea_size_bm + round(side_length/2);
+%     scatter(electrode_x(k),electrode_y(k), 20, 'r','filled');
+% end
+% 
+% set(gca,'YTickLabel',[])
+% set(gca,'XTickLabel',[])
+
 %%
 if length(displaychannel) == 60
     ALL = 1;
