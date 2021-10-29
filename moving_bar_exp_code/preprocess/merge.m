@@ -4,9 +4,9 @@ close all;
 delay_correction = 0.0071;
 
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\test';
+exp_folder = 'D:\GoogleDrive\retina\Troy''s data\20210930';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
-videoworkspace = '\\192.168.0.100\Experiment\Retina\2020Videos\0219v\videoworkspace\';
+videoworkspace = '\\ZebraNas\Public\Retina\videoworkspace\';
 cd(exp_folder)
 cd playmovie
 fileID = fopen('playmovie/list.txt','r');

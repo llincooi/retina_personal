@@ -2,7 +2,7 @@
 close all;
 clear all;
 code_folder = pwd;
-exp_folder = 'D:\Leo\0409';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0409';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0406';
 cd(exp_folder);
 %load('different_G.mat')
@@ -27,7 +27,7 @@ else
     n_file = length(all_file) ;
 end
 roi = find(RF_properties(:,2)~=0)';
-for z = 1:n_file
+for z = 4
     %choose file
     file = all_file(z).name ;
     [pathstr, name, ext] = fileparts(file);
@@ -117,9 +117,9 @@ for z = 1:n_file
             negative_before_pos{i} = pos_100ms(find(idx==2));
         end
     end
-    if sorted
-        save([exp_folder,'\STA\sort\',name(12:end),'.mat'],'STA_time','dis_STA','bin_pos','corr_time','idxs','PCA_STAs','positive_PCAs','negative_PCAs','positive_before_pos','negative_before_pos','BinningSpike','TheStimuli','BinningTime','forward','backward','bin','BinningInterval','score1','score2')
-    else
-        save([exp_folder,'\STA\unsort\',name(7:end),'.mat'],'STA_time','dis_STA','bin_pos','corr_time','idxs','PCA_STAs','positive_PCAs','negative_PCAs','positive_before_pos','negative_before_pos','BinningSpike','TheStimuli','BinningTime','forward','backward','bin','BinningInterval','score1','score2')
-    end
+%     if sorted
+%         save([exp_folder,'\STA\sort\',name(12:end),'.mat'],'STA_time','dis_STA','bin_pos','corr_time','idxs','PCA_STAs','positive_PCAs','negative_PCAs','positive_before_pos','negative_before_pos','BinningSpike','TheStimuli','BinningTime','forward','backward','bin','BinningInterval','score1','score2')
+%     else
+%         save([exp_folder,'\STA\unsort\',name(7:end),'.mat'],'STA_time','dis_STA','bin_pos','corr_time','idxs','PCA_STAs','positive_PCAs','negative_PCAs','positive_before_pos','negative_before_pos','BinningSpike','TheStimuli','BinningTime','forward','backward','bin','BinningInterval','score1','score2')
+%     end
 end

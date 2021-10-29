@@ -1,4 +1,4 @@
-function[Spikes,TimeStamps,a_data,vdata,Infos] = analyze_MEA_data_revised(filename,save_data,comment,experimenter,analog_type,r_interval)
+function[Spikes,TimeStamps,a_data,v_data,Infos] = analyze_MEA_data_revised(filename,save_data,comment,experimenter,analog_type,r_interval)
 % experimenter is default as the first folder in the directory, if not,
 % please type in manually
 
@@ -78,16 +78,12 @@ elseif strcmp(analog_type,'A3')
     end
 end
 
-try
-    AllData = nextdata(AllDataInfo,'startend',[t1 , t2],...
-        'originorder','on' ,'streamname','Electrode Raw Data');
-    rawdata = AllData.data ;
-    [vdata, ~] = ad2muvolt(AllDataInfo, rawdata', 'Electrode Raw Data'); % rescale vdata(uV) , tvals(us)
-    clear rawdata
-    vdata = reshape(vdata,60,[length(vdata)/60]);
-catch
-    vdata = -1;
-end
+AllData = nextdata(AllDataInfo,'startend',StartStopVector,...
+    'originorder','on' ,'streamname','Electrode Raw Data 1');
+rawdata = AllData.data ;
+[vdata, ~] = ad2muvolt(AllDataInfo, rawdata', 'Electrode Raw Data 1'); % rescale vdata(uV) , tvals(us)
+clear rawdata
+vdata = reshape(vdata,60,[length(vdata)/60]);
 
 
 

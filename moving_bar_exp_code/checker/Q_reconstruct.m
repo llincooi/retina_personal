@@ -7,9 +7,9 @@
 pass = 1;
 %data = [pwd,'\data\',data_name,'.mat'];
 
-    data_name = name;
-    data = ['D:\Leo\0225\data\', name,'.mat'];
-    %workspace_name = merge_txt{10}{m};
+data_name = name;
+data = ['D:\GoogleDrive\retina\Troy''s data\20210930\\data\0224_Checkerboard_30Hz_27_15min_Br50_Q100.mat'];
+%workspace_name = merge_txt{10}{m};
 type = 'else';
 
 complete_name =[videoworkspace,workspace_name,'.mat'];
