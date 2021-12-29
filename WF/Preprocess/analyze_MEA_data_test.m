@@ -1,4 +1,4 @@
-function[Spikes,TimeStamps,a_data,Infos] = analyze_MEA_data_revised(filename,save_data,comment,experimenter,analog_type,r_interval)
+function[TimeStamps,a_data,vdata,Infos] = analyze_MEA_data_test(filename,save_data,comment,experimenter,analog_type,r_interval)
 % experimenter is default as the first folder in the directory, if not,
 % please type in manually
 
@@ -6,7 +6,7 @@ function[Spikes,TimeStamps,a_data,Infos] = analyze_MEA_data_revised(filename,sav
 
 
 file = strcat(filename);
-AllDataInfo =datastrm(file) ;
+AllDataInfo = datastrm(file) ;
 
 %infos
 filename = getfield(AllDataInfo,'filename');
@@ -48,11 +48,11 @@ Infos.t_stop  = t2;
 %main process
 [TimeStamps,a_data,a_data_all] = Analog_time(AllDataInfo);   % get trig_time, need: AllDataInfo, t1,t2, filename_length, save trig_time into .mat
 
-if r_interval ~=0
-    [Spikes]=get_spikes(AllDataInfo,r_interval); % call data from AllDataInfo, get spike0(=spike_location)   , save spikttime into.mat
-else
-    [Spikes]=get_spikes(AllDataInfo); % call data from AllDataInfo, get spike0(=spike_location)   , save spikttime into.mat
-end
+% if r_interval ~=0
+%     [Spikes]=get_spikes(AllDataInfo,r_interval); % call data from AllDataInfo, get spike0(=spike_location)   , save spikttime into.mat
+% else
+%     [Spikes]=get_spikes(AllDataInfo); % call data from AllDataInfo, get spike0(=spike_location)   , save spikttime into.mat
+% end
 %save, defalt: save data
 if ~exist('save_data','var')
     save_data=1;
@@ -82,7 +82,7 @@ end
 
 if save_data==1
     n = [filename(1:end-4),'.mat'];
-    save(n,'Spikes','TimeStamps','vdata','a_data','Infos','-v7.3')
+    save(n,'TimeStamps','a_data','vdata','Infos','-v7.3')
 end
 end
 

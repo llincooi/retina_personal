@@ -1,18 +1,18 @@
 %cd('0704');
 clear all
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Chou''s data\211217';
-% exp_folder = 'D:\GoogleDrive\retina\Troy''s data\20211126';
+% exp_folder = 'D:\GoogleDrive\retina\Exps\2021\1117';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2021\1130';
 cd(exp_folder)
 all_file = dir('*.mcd') ; % change the type of the files which you want to select, subdir or dir.
 n_file = length(all_file) ; 
-for m = 1
+for m = 1: n_file
     file = all_file(m).name ;
     [pathstr, name, ext] = fileparts(file);
     filename = [exp_folder,'\',name,ext];
     
     cd(code_folder)
-    [Spikes,TimeStamps,a_data,Infos] = analyze_MEA_data_revised(filename,1,'','Leo','all',10^5);
+    [TimeStamps,a_data,vdata,Infos] = analyze_MEA_data_test(filename,1,'','Leo','all',10^5);
     %save_data = 1 means save data
     %analog_type sets to 'all'
     %r_interval is the interval that calculates std,if none,it calculate total interval

@@ -10,11 +10,12 @@ save_svd =1;%0 is no save svd photo, 1 is save
 sorted = 0;
 unit = 0;
 
-name = '30Hz_27_RF_15min';%Directory name
-exp_folder = 'D:\GoogleDrive\retina\Exps\2020\0729';
+name = '30Hz_27_RF_15min_1'; % Directory name for saving figure
+exp_folder = 'D:\GoogleDrive\retina\Exps\2021\1212';
+% exp_folder = 'D:\GoogleDrive\retina\Troy''s data\20211209';
 cd(exp_folder)
 if ~sorted
-    load('merge\merge_0224_Checkerboard_30Hz_27_15min_Br50_Q100.mat')
+    load('merge\merge_1211_Checkerboard_30Hz_27_15min_Br50_Q100_1.mat') 
     analyze_spikes = reconstruct_spikes;
     sort_directory = 'unsort';
 else
@@ -26,7 +27,7 @@ else
 end
 
 try
-    load(['Analyzed_data\',sort_directory,'\0224_cSTA_wf_3min_Q100.mat'])
+    load(['Analyzed_data\',sort_directory,'\1211_WF_WN_10-0.2mW_0.mat'])
     cd Analyzed_data
     mkdir(name)
     cd(name)

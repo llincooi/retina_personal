@@ -3,16 +3,17 @@ close all;
 clear all;
 %% Setting
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Chou''s data\20210513';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2021\1212';
+% exp_folder = 'D:\GoogleDrive\retina\Troy''s data\20211209';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503'
 load('rr.mat')
 cd(exp_folder);
 sorted = 0;
 unit = 0;
 save_photo = 1;
-name = '0224_cSTA_wf_3min_Q100_re';
+name = '1211_WF_WN_10-0.2mW';
 %name = '0609_cSTA_UL_DR_5min_Q100_6.5mW_-100';
-mean_lumin = 6.5;
+% mean_lumin = 20;
 %% Make directory
 mkdir Analyzed_data
 mkdir FIG cSTA
@@ -38,7 +39,7 @@ backward = 0;%0 bins after spikes for calculating STA
 time=[-forward :backward]*BinningInterval*1000;% ms
 BinningTime =diode_BT;
 bin=BinningInterval*10^3; %ms
-TheStimuli=bin_pos;  %Gaussian noise
+TheStimuli=(bin_pos-mean(bin_pos))/std(bin_pos);  %Gaussian noise
 stimulus_length = TimeStamps(2)-TimeStamps(1);
 %% Calculate STA
 sum_n = zeros(1,60);
@@ -54,11 +55,11 @@ for i = 1:60  % i is the channel number
     if sum_n(i)
         cSTA(i,:) = cSTA(i,:)/sum_n(i);
     end
-    dcSTA(i,:) = [cSTA(i,:) mean_lumin mean_lumin] - [mean_lumin mean_lumin cSTA(i,:)];
+    dcSTA(i,:) = [cSTA(i,:) 0 0] - [0 0 cSTA(i,:)];
 end
 dcSTA(:,end) = [];
 dcSTA(:,1) = [];
-cSTA = cSTA-mean_lumin;
+% cSTA = cSTA-mean_lumin;
 
 %% Exclude useless channel
 useful_channelnumber = [];

@@ -4,17 +4,18 @@ close all;
 delay_correction = 0.0071;
 
 code_folder = pwd;
-exp_folder = 'D:\GoogleDrive\retina\Troy''s data\20210930';
+exp_folder = 'D:\GoogleDrive\retina\Exps\2021\1212';
+% exp_folder = 'D:\GoogleDrive\retina\Troy''s data\20211209';
 %exp_folder = 'C:\Users\llinc\OneDrive\Documents\GitHub\retina_personal\0503';
-videoworkspace = '\\ZebraNas\Public\Retina\videoworkspace\';
+videoworkspace = '\\ZebraNas\Public\Retina\Video\20211211video\videoworkspace\';
 cd(exp_folder)
 cd playmovie
-fileID = fopen('playmovie/list.txt','r');
+fileID = fopen('playmovie/filename_list.txt','r');
 formatSpec = '%c';
 txt = textscan(fileID,'%s','delimiter','\n'); 
 num_files = length(txt{1});
 
-merge_ID = fopen('playmovie/merge_list.txt','r');
+merge_ID = fopen('playmovie/workspacename_list.txt','r');
 formatSpec = '%c';
 merge_txt = textscan(merge_ID,'%s','delimiter','\n'); 
 cd ..

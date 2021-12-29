@@ -1,14 +1,13 @@
 % white noise stimulus
 clear
 close all
-savepath='\\ZebraNas\Public\Retina\WF_stimuli\211029';
+savepath='\\ZebraNas\Public\Retina\WF_stimuli\211217';
 Tot=300;
 dt=0.05;
 x_rand=randn(1,Tot/dt);
 %% different mean different contrast 20211029
-mean_set=[1 4 7 10 13];
-C_set=[0.05,0.1,0.2,0.3];
-
+mean_set=[4 7 10 13];
+C_set=[0.1,0.15,0.2,0.3];
 for i=1:length(mean_set)
     figure(i);hold on
     for j=1:length(C_set)

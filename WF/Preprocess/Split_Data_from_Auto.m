@@ -1,10 +1,10 @@
 % split file
 clear all
 close all
-path='D:\GoogleDrive\retina\Exps\2021\1028\';
-load([path,'20211028_whole_filed'])
+path = 'D:\GoogleDrive\retina\Chou''s data\211217';
+load([path,'\20211217_whole_filed.mat'])
 rate=20000;
-i=1;
+i=1; 
 split_time=[];
 
 for i=2:2:length(TimeStamps)-2
@@ -14,6 +14,8 @@ for i=2:2:length(TimeStamps)-2
     end
     
 end
+% split_time(2:21) = split_time(2:21)+400;
+% split_time(23:34) = split_time(23:34)+400;
 plot(TimeStamps,zeros(1,length(TimeStamps)),'o');hold on;plot(split_time,zeros(1,length(split_time)),'+')
 
 t_start=0;
@@ -26,19 +28,19 @@ dataset=cell(1,length(split_time));
 spikeset=cell(1,length(split_time));
 TimeStampset=cell(1,length(split_time));
 for j=1:length(split_time)
-    t_end=split_time(j);
-    TimeStampset{j}=TimeStamps(TimeStamps>t_start & TimeStamps<t_end);
-    TimeStampset{j}=TimeStampset{j}-t_start;
-    a1split=adata1(t>t_start & t<t_end);
-    a2split=adata2(t>t_start & t<t_end);
-    dataset{j}=[a1split;a2split];
-    split_spikes=cell(1,60);
+    t_end = split_time(j);
+    TimeStampset{j} = TimeStamps(TimeStamps>t_start & TimeStamps<t_end);
+    TimeStampset{j} = TimeStampset{j}-t_start;
+    a1split = adata1(t>t_start & t<t_end);
+    a2split = adata2(t>t_start & t<t_end);
+    dataset{j} = [a1split;a2split];
+    split_spikes = cell(1,60);
     for k=1:60
-        split_spikes{k}=Spikes{k}(Spikes{k}>t_start & Spikes{k}<t_end);
-        split_spikes{k}=split_spikes{k}-t_start;
+        split_spikes{k} = Spikes{k}(Spikes{k}>t_start & Spikes{k}<t_end);
+        split_spikes{k} = split_spikes{k}-t_start;
     end
-    spikeset{j}=split_spikes;
-    t_start=t_end;
+    spikeset{j} = split_spikes;
+    t_start = t_end;
 end
 clearvars adata1 adata2
 

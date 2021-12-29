@@ -65,7 +65,7 @@ if abs(totalTime-idealTime)>3
     return
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-figure;plot(lumin)
+% figure;plot(lumin)
 hold on; plot(diode_start,lumin(diode_start),'r*');
 hold on;plot(diode_end,lumin(diode_end),'g*');
 xlabel('time')
