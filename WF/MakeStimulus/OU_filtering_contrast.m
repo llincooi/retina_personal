@@ -4,9 +4,9 @@ close all
 path='\\ZebraNas\Public\Retina\WF_stimuli\211217\';
 
 Tot = 300;
-dt = 0.01; 
+dt = 0.01; %100Hz
 T = dt:dt:Tot;
-tau=0.5;
+tau = 0.5;
 D = 1; % dynamical range
 at = 60;
 a2=[];ey=[];ey1=[];
@@ -31,7 +31,7 @@ mean_set=[4 7 10 13];
 C_set=[0.1,0.15,0.2,0.3];
 
 figure(4);hold on;
-[t,ey,a2]=generate_stimulus(L,10,2,dt,24);  % (signal, mean intensity, times of std)
+[t,ey,a2] = generate_stimulus(L,10,2,dt,24);  % (signal, mean intensity, times of std)
 plot(t,ey,'linewidth',1);
 if saving
     save([path,'OU_tau=',num2str(tau*1000),'ms_cutoff=0_mean=10_amp=2.mat'],'ey','a2','t')
@@ -59,8 +59,10 @@ end
 %%
 figure
 for cutoff=[2,4]
+    
     [b,a]=butter(2,2*cutoff*dt,'low');
     Lf = filtfilt(b,a,L);
+    
     mean=10;
     amp=10*0.2;
     [t,ey,a2]=generate_stimulus(Lf,mean,amp,dt,24);
@@ -68,6 +70,7 @@ for cutoff=[2,4]
     if saving
         save([path,'OU_tau=',num2str(tau*1000),'ms_cutoff=',num2str(cutoff),'_mean=10_C=0.2.mat'],'ey','a2','t')
     end
+    
 end
 
 
